@@ -1,0 +1,7 @@
+{
+    "extends": ["ts-react-important-stuff"],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "requireConfigFile": false
+    }
+}

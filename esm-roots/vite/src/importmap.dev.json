@@ -1,0 +1,7 @@
+{
+    "imports": {
+        "@Razmio/rnd-2": "http://localhost:3001/src/spa.tsx",
+        "@Razmio/route-welcome": "http://localhost:3003/src/spa.tsx",
+        "@Razmio/Fed": "http://localhost:9001/Razmio-Fed.js"
+    }
+}
