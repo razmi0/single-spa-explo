@@ -16,6 +16,5 @@ export default (webpackConfigEnv, argv) => {
             "react-dom": "react-dom",
             "react-dom/client": "react-dom/client",
         },
-        // modify the webpack config however you'd like to by adding to this object
     });
 };

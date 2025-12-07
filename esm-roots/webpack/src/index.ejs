@@ -4,7 +4,11 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Webpack</title>
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1" />
+        <title>Webpack - <%= orgName %> - <%= projectName %></title>
         <meta
             http-equiv="Content-Security-Policy"
             content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https:; object-src 'none';" />
@@ -33,21 +37,10 @@
         <!-- Add your organization's prod import map URL to this script's src  -->
         <!-- <script type="injector-importmap" src="/importmap.json"></script> -->
 
-        <% if (isLocal) { %>
-        <script type="injector-importmap">
-            {
-                "imports": {
-                    "@Razmio/root-config": "http://localhost:2999/Razmio-root-config.js",
-                    "@single-spa/welcome": "https://cdn.jsdelivr.net/npm/single-spa-welcome/dist/single-spa-welcome.min.js",
-                    "@Razmio/rnd-2": "http://localhost:3001/Razmio-rnd-2.js",
-                    "@Razmio/route-welcome": "http://localhost:3003/src/spa.tsx"
-                }
-            }
-        </script>
-        <% } %>
+        <script type="injector-importmap" src="<%= IMPORTMAP_PATH %>"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@5.1.1/dist/import-map-overrides.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@single-spa/import-map-injector@2.0.1/lib/import-map-injector.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@5.1.1/dist/import-map-overrides.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/@single-spa/import-map-injector@3.0.0/lib/import-map-injector.js"></script>
     </head>
     <body>
         <noscript> You need to enable JavaScript to run this app. </noscript>
@@ -58,7 +51,7 @@
             window.importMapInjector.initPromise.then(() => {
                 import("@Razmio/root-config");
                 import("@Razmio/rnd-2");
-                import("@Razmio/route-welcome");
+                import("@Razmio/welcome");
             });
         </script>
         <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>

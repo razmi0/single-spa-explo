@@ -1,5 +1,4 @@
 import "./index.css";
-
 import { getAppNames, registerApplication, start } from "single-spa";
 import { constructApplications, constructLayoutEngine, constructRoutes } from "single-spa-layout";
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
-//@ts-ignore
 import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
 
-const tools = ["webpack", "react", "single-spa"];
+const tools = ["vite", "react", "single-spa"];
 
 const Logo = ({ href, src, name }: { href: string; src: string; name: string }) => {
     return (
@@ -26,11 +26,7 @@ export default function Root({ name }: { name: string }) {
     return (
         <>
             <div>
-                <Logo
-                    href="https://webpack.js.org/"
-                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1"
-                    name="Webpack"
-                />
+                <Logo href="https://vitejs.dev/" src={viteLogo} name="Vite" />
                 <Logo href="https://18.react.dev/" src={reactLogo} name="React" />
                 <Logo
                     href="https://single-spa.js.org/"
@@ -38,7 +34,7 @@ export default function Root({ name }: { name: string }) {
                     name="Single-spa"
                 />
             </div>
-            <h2 style={{ margin: 0, padding: "0px" }}>{name}</h2>
+            <h2 style={{ margin: 0, padding: 0 }}>{name}</h2>
             <p style={{ margin: 0, padding: 0, textDecoration: "underline" }}>
                 {tools.map((tool) => tool.charAt(0).toUpperCase() + tool.slice(1)).join(" + ")}
             </p>
