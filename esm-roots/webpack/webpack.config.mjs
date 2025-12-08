@@ -33,11 +33,20 @@ const IMPORTMAP_PATH = `src/importmap.${IMPORT_MAP_MODE}.json`; // import map pa
 const read = (filePath) => {
     try {
         const content = fs.readFileSync(path.resolve(__dirname, filePath), "utf-8");
-        if (!content) throw new Error(`File ${filePath} not found`);
         return content;
     } catch (error) {
-        throw new Error(`File ${filePath} not found`);
+        const reason = error instanceof Error ? error.message : String(error);
+        throw new Error(`File ${filePath} not found: ${reason}`);
     }
+};
+
+const setupMiddlewares = (middlewares, devServer) => {
+    if (!devServer) return middlewares;
+    devServer.app.get(/\/importmap.*\.json$/, (req, res, next) => {
+        res.type("application/importmap+json");
+        next();
+    });
+    return middlewares;
 };
 
 export default (webpackConfigEnv, argv) => {
@@ -53,14 +62,10 @@ export default (webpackConfigEnv, argv) => {
 
     return merge(defaultConfig, {
         devServer: {
-            setupMiddlewares: (middlewares, devServer) => {
-                if (!devServer) return middlewares;
-                devServer.app.get(/\/importmap.*\.json$/, (req, res, next) => {
-                    res.type("application/importmap+json");
-                    next();
-                });
-                return middlewares;
-            },
+            /**
+             * injector-importmap expect content-type application/importmap+json
+             */
+            setupMiddlewares,
         },
         plugins: [
             /**

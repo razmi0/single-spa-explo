@@ -1,9 +1,9 @@
-import "./index.css";
 import { getAppNames, registerApplication, start } from "single-spa";
 import { constructApplications, constructLayoutEngine, constructRoutes } from "single-spa-layout";
+import "./index.css";
 
-import microfrontendLayout from "./microfrontend-layout.html?raw";
-const routes = constructRoutes(microfrontendLayout);
+const rootLayout = document.querySelector("#single-spa-layout")!;
+const routes = constructRoutes(rootLayout);
 
 const applications = constructApplications({
     routes,

@@ -33,9 +33,6 @@ export default function vitePluginReactHMR() {
             // Only patch modules that participate in HMR / Fast Refresh.
             if (!code.includes("import.meta.hot")) return;
 
-            console.log("ghi");
-            console.log(react.preambleCode);
-
             return react.preambleCode.replace("__BASE__", base) + code;
         },
     };

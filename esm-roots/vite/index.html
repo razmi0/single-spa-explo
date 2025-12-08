@@ -4,9 +4,13 @@
         <meta charset="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Vite</title>
+        <title><%= title %></title>
     </head>
     <body>
-        <script type="module" src="/src/main.ts"></script>
+        <noscript> You need to enable JavaScript to run this app. </noscript>
+        <template id="single-spa-layout">
+            <single-spa-router> <%= layout %> </single-spa-router>
+        </template>
+        <script type="module" src="/src/root-config.ts"></script>
     </body>
 </html>
