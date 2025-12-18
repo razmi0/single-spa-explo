@@ -12,6 +12,11 @@ const BASE_URL_DEPLOYMENT = `http://localhost:${PORT}/`;
 export default defineConfig(({ command }) => ({
     // the base url is injected into any assets to ensure they're http references in production (not relative paths)
     base: command === "serve" ? "/" : BASE_URL_DEPLOYMENT,
+    resolve: {
+        alias: {
+            "/Razmio-welcome.js": "/src/Razmio-welcome.tsx",
+        },
+    },
     plugins: [
         react(),
         command === "serve" && vitePluginReactHMR(),
@@ -21,6 +26,7 @@ export default defineConfig(({ command }) => ({
             spaEntryPoints: ENTRY_POINTS,
         }),
     ],
+    esbuild: {},
     build: {
         minify: false,
         rollupOptions: { external: ["react", "react-dom"] },

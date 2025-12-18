@@ -1,5 +1,4 @@
 import react from "@vitejs/plugin-react";
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -10,26 +9,10 @@ import SingleSpaPlugin from "vite-plugin-single-spa";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env from the Vite root directory
-dotenv.config({ path: path.resolve(__dirname, ".env") });
-
-const port = 3000;
+const port = 2998;
 
 const orgName = "Razmio";
 const projectName = "root-config";
-
-const LAYOUT_PATH = "src/routes/layout.html"; // applications layout
-// const PRODUCT = publicEnv.PUBLIC_PRODUCT ?? "product-1"; // product name
-/**
- * "dev" or ""
- * - importmap.dev.json
- * - importmap.json
- */
-const IMPORT_MAP_MODE = process.env.VITE_PUBLIC_LAYOUT_MODE ?? ""; // import map mode
-const IMPORTMAP_PATH = `src/importmap.${IMPORT_MAP_MODE}.json`; // import map path
-
-console.log(IMPORTMAP_PATH);
-console.log(import.meta.env);
 
 const read = (filePath: string) => {
     try {
@@ -42,9 +25,17 @@ const read = (filePath: string) => {
 };
 
 // https://vite.dev/config/
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+    /**
+     * "dev" or ""
+     * - importmap.dev.json
+     * - importmap.json
+     */
+    const IMPORTMAP_PATH = `src/importmap${mode === "dev" ? ".dev" : ""}.json`; // import map path
+    const LAYOUT_PATH = "src/routes/layout.html"; // applications layout
+
     const config: UserConfigExport = {
-        base: "./",
+        // base: "./",
         plugins: [
             react(),
             EjsPlugin((viteConfig) => {
@@ -69,6 +60,9 @@ export default defineConfig(() => {
                 },
             }),
         ],
+        // optimizeDeps: {
+        //     entries: [],
+        // },
         server: { port },
         preview: { port },
         // define: {
@@ -76,9 +70,6 @@ export default defineConfig(() => {
         // },
         build: {
             minify: false,
-            rollupOptions: {
-                // external: ["react", "react-dom"],
-            },
         },
     };
     return config;
