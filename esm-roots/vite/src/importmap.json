@@ -1,6 +1,0 @@
-{
-    "imports": {
-        "@Razmio/rnd-2": "http://localhost:3001/Razmio-rnd-2.js",
-        "@Razmio/welcome": "http://localhost:3003/Razmio-welcome.js"
-    }
-}

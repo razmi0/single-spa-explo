@@ -11,6 +11,19 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    text-align: center;
+}
+
+small {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
 }
 
 a {
@@ -23,11 +36,26 @@ a:hover {
 }
 
 body {
+    position: relative;
     margin: 0;
     display: flex;
-    place-items: center;
+    align-items: center;
+    justify-content: center;
     min-width: 320px;
     min-height: 100vh;
+    flex-direction: column-reverse;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    .app-wrapper {
+        border: #646cff 1px dashed;
+    }
 }
 
 h1 {
@@ -45,6 +73,7 @@ button {
     background-color: #1a1a1a;
     cursor: pointer;
     transition: border-color 0.25s;
+    margin: 10px;
 }
 button:hover {
     border-color: #646cff;
@@ -65,6 +94,10 @@ button:focus-visible {
     button {
         background-color: #f9f9f9;
     }
+    small {
+        color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 }
 
 #root {
@@ -75,7 +108,7 @@ button:focus-visible {
 }
 
 .logo {
-    height: 6em;
+    height: 4em;
     padding: 1.5em;
     will-change: filter;
     transition: filter 300ms;
@@ -100,55 +133,4 @@ button:focus-visible {
     a:nth-of-type(2) .logo {
         animation: logo-spin infinite 20s linear;
     }
-}
-
-.card {
-    padding: 2em;
-}
-
-.read-the-docs {
-    color: #888;
-}
-
-:root {
-    --app-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-    --app-shadow-hover: 0 22px 55px rgba(15, 23, 42, 0.18);
-    --app-outline: #2563eb;
-}
-
-.mf-shell {
-    min-height: 100vh;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    padding: 32px 24px;
-    box-sizing: border-box;
-}
-
-.mf-main {
-    flex: 1;
-    max-width: 1440px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    border: 1px solid var(--app-outline);
-    align-items: stretch;
-    justify-content: center;
-}
-
-.mf-application-container {
-    width: 100%;
-    box-shadow: var(--app-shadow);
-    padding: 12px;
-    box-sizing: border-box;
-    transition: outline 150ms ease, outline-offset 150ms ease, box-shadow 150ms ease, transform 150ms ease;
-    outline: 2px solid transparent;
-    outline-offset: 0;
-}
-
-.mf-application-container:hover {
-    outline: 2px solid var(--app-outline);
-    outline-offset: 3px;
-    box-shadow: var(--app-shadow-hover);
-    transform: translateY(-1px);
 }

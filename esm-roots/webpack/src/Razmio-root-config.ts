@@ -1,7 +1,6 @@
 //@ts-ignore
 import { registerApplication, start } from "single-spa";
 import { constructApplications, constructLayoutEngine, constructRoutes } from "single-spa-layout";
-import "./index.css";
 
 const routes = constructRoutes(document.querySelector("#single-spa-layout"));
 const applications = constructApplications({
