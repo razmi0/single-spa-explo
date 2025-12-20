@@ -46,6 +46,7 @@ export default (env, argv) => {
                 "Rspack",
                 HtmlRspackPlugin,
                 {
+                    icon  : "https://assets.rspack.rs/rspack/favicon-128x128.png",
                     IMPORTMAP_PATH: getImportmapPath(env.MODE === "dev"),
                     sharedImportmap: read(`${SHARED_DIR}/importmap.shared.json`),
                     mode: env.MODE || "prod",

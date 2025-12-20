@@ -44,6 +44,7 @@ export default (env, argv) => {
                 "Webpack",
                 HtmlWebpackPlugin,
                 {
+                    icon: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1",
                     IMPORTMAP_PATH: getImportmapPath(env.MODE === "dev"),
                     mode: env.MODE || "prod",
                     sharedImportmap: read(`${SHARED_DIR}/importmap.shared.json`) || "",
