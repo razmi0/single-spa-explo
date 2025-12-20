@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn, exec } from "child_process";
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from "fs";
+import { writeFileSync, readFileSync, mkdirSync, existsSync, unlinkSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -269,6 +269,16 @@ function saveConsolidatedResults() {
     console.log(`\n📁 Consolidated results saved: ${outputFile}`);
 }
 
+// Clean up intermediate build JSON files
+function cleanupIntermediateFiles() {
+    for (const bundlerKey of Object.keys(bundlers)) {
+        const file = `${RESULTS_DIR}/${bundlerKey}-build.json`;
+        if (existsSync(file)) {
+            unlinkSync(file);
+        }
+    }
+}
+
 // Main execution
 async function main() {
     const options = parseArgs();
@@ -320,8 +330,9 @@ async function main() {
         }
     }
 
-    // Save consolidated results
+    // Save consolidated results and clean up intermediate files
     saveConsolidatedResults();
+    cleanupIntermediateFiles();
 
     console.log("\n==========================================");
     console.log("✅ Benchmarks complete!");

@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
-        "bench": "node ../benchmark.mjs"
+        "bench": "node ../../benchmark.mjs"
     },
     "devDependencies": {
         "vite": "^7.2.4"

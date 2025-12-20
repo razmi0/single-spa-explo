@@ -55,6 +55,12 @@ header h1 {
     background-clip: text;
 }
 
+header .underlined {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: var(--text-primary);
+}
+
 .subtitle {
     color: var(--text-secondary);
     font-size: 1.1rem;
