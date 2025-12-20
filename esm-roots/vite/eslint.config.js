@@ -28,6 +28,7 @@ export default tseslint.config(
         rules: {
             ...reactHooks.configs.recommended.rules,
             "@typescript-eslint/no-unsafe-assignment": "off",
+            "@typescript-eslint/no-unsafe-call": "off",
             "react-refresh/only-export-components": ["off", { allowConstantExport: true }],
         },
     }

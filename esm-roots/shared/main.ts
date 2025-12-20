@@ -62,6 +62,26 @@ export function getImportmapPath(isDev: boolean): string {
 }
 
 /**
+ * Generates the MFE import map with the correct port for root-config
+ * @param readFn - function to read files
+ * @param sharedDir - path to shared directory
+ * @param importmapFile - name of the import map file
+ * @param port - port number for root-config (optional - if not provided, uses the import map as-is)
+ */
+export function getMfeImportmap(
+    readFn: (path: string) => string,
+    sharedDir: string,
+    importmapFile: string,
+    port?: string | number
+): string {
+    const importmap = JSON.parse(readFn(`${sharedDir}/${importmapFile}`));
+    if (port) {
+        importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = `http://localhost:${port}/${ORG_NAME}-${PROJECT_NAME}.js`;
+    }
+    return JSON.stringify(importmap, null, 4);
+}
+
+/**
  * Copy shared importmap files
  * - see index.ejs
  */
@@ -95,9 +115,9 @@ export const devServer = (env: { PORT: string }) => ({
     hot: true,
     port: Number(env.PORT),
 
-    setupMiddlewares: (middlewares, devServer) => {
+    setupMiddlewares: (middlewares: any, devServer: any) => {
         if (!devServer) return middlewares;
-        devServer.app.get(/\/importmap.*\.json$/, (_req, res, next) => {
+        devServer.app.get(/\/importmap.*\.json$/, (_req: any, res: any, next: any) => {
             res.type("application/importmap+json");
             next();
         });

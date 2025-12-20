@@ -1,14 +1,3 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,9 +6,9 @@ import { fileURLToPath } from "url";
  * @param importMetaUrl - import.meta.url from the calling module
  */
 export function getDirname(importMetaUrl) {
-    var __filename = fileURLToPath(importMetaUrl);
-    var __dirname = path.dirname(__filename);
-    return { __filename: __filename, __dirname: __dirname };
+    const __filename = fileURLToPath(importMetaUrl);
+    const __dirname = path.dirname(__filename);
+    return { __filename, __dirname };
 }
 /**
  * Reads a file synchronously from the filesystem
@@ -30,12 +19,12 @@ export function getDirname(importMetaUrl) {
  */
 export function readFile(basePath, filePath) {
     try {
-        var content = fs.readFileSync(path.resolve(basePath, filePath), "utf-8");
+        const content = fs.readFileSync(path.resolve(basePath, filePath), "utf-8");
         return content;
     }
     catch (error) {
-        var reason = error instanceof Error ? error.message : String(error);
-        throw new Error("File ".concat(filePath, " not found: ").concat(reason));
+        const reason = error instanceof Error ? error.message : String(error);
+        throw new Error(`File ${filePath} not found: ${reason}`);
     }
 }
 /**
@@ -44,21 +33,21 @@ export function readFile(basePath, filePath) {
  * @returns A function that reads files relative to the module's directory
  */
 export function createReader(importMetaUrl) {
-    var __dirname = getDirname(importMetaUrl).__dirname;
-    return function (filePath) { return readFile(__dirname, filePath); };
+    const { __dirname } = getDirname(importMetaUrl);
+    return (filePath) => readFile(__dirname, filePath);
 }
 /**
  * Resolves the shared directory path relative to a config file
  * @param importMetaUrl - import.meta.url from the calling module
  */
 export function getSharedDir(importMetaUrl) {
-    var __dirname = getDirname(importMetaUrl).__dirname;
+    const { __dirname } = getDirname(importMetaUrl);
     return path.resolve(__dirname, "../shared");
 }
 // Common constants
-export var ORG_NAME = "Razmio";
-export var PROJECT_NAME = "root-config";
-export var LAYOUT_FILE = "single-spa-layout.html";
+export const ORG_NAME = "Razmio";
+export const PROJECT_NAME = "root-config";
+export const LAYOUT_FILE = "single-spa-layout.html";
 /**
  * Returns the importmap filename based on mode
  * @param isDev - whether in development mode
@@ -67,10 +56,24 @@ export function getImportmapPath(isDev) {
     return isDev ? "importmap.dev.json" : "importmap.json";
 }
 /**
+ * Generates the MFE import map with the correct port for root-config
+ * @param readFn - function to read files
+ * @param sharedDir - path to shared directory
+ * @param importmapFile - name of the import map file
+ * @param port - port number for root-config (optional - if not provided, uses the import map as-is)
+ */
+export function getMfeImportmap(readFn, sharedDir, importmapFile, port) {
+    const importmap = JSON.parse(readFn(`${sharedDir}/${importmapFile}`));
+    if (port) {
+        importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = `http://localhost:${port}/${ORG_NAME}-${PROJECT_NAME}.js`;
+    }
+    return JSON.stringify(importmap, null, 4);
+}
+/**
  * Copy shared importmap files
  * - see index.ejs
  */
-export var copyPlugin = function (instance, sharedDir) {
+export const copyPlugin = (instance, sharedDir) => {
     return new instance({
         patterns: [
             { from: "importmap*.json", context: sharedDir, to: "[name][ext]" },
@@ -82,23 +85,28 @@ export var copyPlugin = function (instance, sharedDir) {
 /**
  * ejs templating
  */
-export var htmlPlugin = function (tech, instance, templateParams, template) {
+export const htmlPlugin = (tech, instance, templateParams, template) => {
     return new instance({
         inject: false,
         template: template || "./src/index.ejs",
-        templateParameters: __assign({ tech: tech, projectName: PROJECT_NAME, orgName: ORG_NAME }, templateParams),
+        templateParameters: {
+            tech,
+            projectName: PROJECT_NAME,
+            orgName: ORG_NAME,
+            ...templateParams,
+        },
     });
 };
-export var devServer = function (env) { return ({
+export const devServer = (env) => ({
     hot: true,
     port: Number(env.PORT),
-    setupMiddlewares: function (middlewares, devServer) {
+    setupMiddlewares: (middlewares, devServer) => {
         if (!devServer)
             return middlewares;
-        devServer.app.get(/\/importmap.*\.json$/, function (_req, res, next) {
+        devServer.app.get(/\/importmap.*\.json$/, (_req, res, next) => {
             res.type("application/importmap+json");
             next();
         });
         return middlewares;
     },
-}); };
+});
