@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "sync": "bun run sync.ts",
-        "sync:watch": "bun run sync.ts --watch"
+        "build": "bun run sync.ts",
+        "dev": "bun run sync.ts --watch"
     },
     "devDependencies": {
         "@types/bun": "^1.1.0",

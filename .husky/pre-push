@@ -1,2 +1,2 @@
-npm run build:shared
+npm run build
 npm run benchmark -- --runs 3 --warmup 1
