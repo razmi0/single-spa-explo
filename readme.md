@@ -1,18 +1,42 @@
-# Exploration Vite-Single-Spa-React-HMR-Webpack
+# Micro-Frontend Bundler Exploration
 
-[fully implemented without root webpack](https://github.com/razmi0/vite-singlespa-react-esm-poc)
+Comparing **Vite**, **Webpack**, and **Rspack** as bundlers for a [single-spa](https://single-spa.js.org/) micro-frontend architecture with React and ESM.
 
-<% if (PROD) { %>
-        <script type="injector-importmap" src="/importmap.prod.json"></script>
-            {
-                "imports": {
-                    "@Razmio/root-config": "<http://localhost:2999/Razmio-root-config.js>",
-                    "@Razmio/rnd-2": "<http://localhost:3001/Razmio-rnd-2.js>",
-                    "@Razmio/welcome": "<http://localhost:3003/src/Razmio-welcome.tsx>"
-                }
-            }
-        </script>
-        <% } else { %>
-        <!-- Production import map: adjust URLs to where you host the built bundles -->
-        <script type="injector-importmap" src="/importmap.json"></script>
-        <% } %>
+## Structure
+
+```text
+├── esm-roots/          # Root configs (orchestrators)
+│   ├── vite/           # Vite root-config
+│   ├── webpack/        # Webpack root-config
+│   ├── rspack/         # Rspack root-config
+│   └── shared/         # Shared configs, templates, importmaps
+├── mfes/               # Micro-frontends
+│   ├── vite/           # Vite MFE
+│   └── webpack/        # Webpack MFE
+└── bench/              # Benchmark tooling
+```
+
+## Quick Start
+
+```bash
+# Build shared utilities
+cd esm-roots/shared && npm run build
+
+# Run any root + MFE combo (e.g., Webpack)
+cd esm-roots/webpack && npm run serve   # Port 2999
+cd mfes/webpack && npm start            # Port 3001
+```
+
+## Benchmarks
+
+```bash
+cd bench && node benchmark.mjs
+```
+
+Options: `--bundler <vite|rspack|webpack>`, `--mode <dev|build>`, `--runs <n>`
+
+Results saved to `bench/results/benchmarks.json` and visualized in `bench/results/dashboard/`.
+
+## Related
+
+[Full implementation without Webpack root](https://github.com/razmi0/vite-singlespa-react-esm-poc)
