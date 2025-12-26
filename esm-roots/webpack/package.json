@@ -4,8 +4,9 @@
         "lint": "eslint src --ext js,ts,tsx",
         "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
         "start": "npm run serve",
-        "serve": "cross-env NODE_ENV=development webpack serve --env PORT=2999 --env MODE=dev",
-        "build": "cross-env NODE_ENV=production webpack build"
+        "serve": "cross-env NODE_ENV=development webpack serve --env PORT=2999 --env MODE=dev --env STAGE=dev ",
+        "build": "cross-env NODE_ENV=production webpack build --mode production --env PORT=2999 --env STAGE=prod",
+        "preview": "npm run build && npx http-server dist -p 2999 --cors -c-1"
     },
     "devDependencies": {
         "@babel/core": "^7.23.3",

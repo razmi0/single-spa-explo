@@ -5,6 +5,7 @@
         "start:standalone": "webpack serve --env standalone",
         "build": "concurrently npm:build:*",
         "build:webpack": "webpack --mode=production",
+        "preview": "npm run build:webpack && npx http-server dist -p 3001 --cors -c-1",
         "analyze": "webpack --mode=production --env analyze",
         "lint": "eslint src --ext js,ts,tsx",
         "format": "prettier --write .",
