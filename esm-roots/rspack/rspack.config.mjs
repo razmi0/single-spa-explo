@@ -3,26 +3,15 @@ import { mergeWithRules, CustomizeRule } from "webpack-merge";
 import singleSpaDefaults from "webpack-config-single-spa";
 import { rspack } from "@rspack/core";
 import { TsCheckerRspackPlugin } from "ts-checker-rspack-plugin";
-import {
-    createReader,
-    getSharedDir,
-    getImportmapPath,
-    getMfeImportmap,
-    LAYOUT_FILE,
-    ORG_NAME as orgName,
-    PROJECT_NAME as projectName,
-    copyPlugin,
-    htmlPlugin,
-    devServer,
-} from "../shared/main.js";
-
+import { ORG_NAME, PROJECT_NAME } from "../shared/dist/constants.js";
+import { copyPlugin, htmlPlugin, devServer } from "../shared/dist/main.js";
+import ImportMapManager from "../shared/dist/ImportMapManager.js";
+import LayoutManager from "../shared/dist/LayoutManager.js";
 const { CopyRspackPlugin, HtmlRspackPlugin } = rspack;
 
-const SHARED_DIR = getSharedDir(import.meta.url);
-const read = createReader(import.meta.url);
-const prod = process.env.NODE_ENV === "production";
+const importMapManager = new ImportMapManager("content");
+const layoutManager = new LayoutManager("content");
 
-// Custom merge that replaces module.rules by test pattern
 const merge = mergeWithRules({
     module: {
         rules: {
@@ -35,24 +24,34 @@ const merge = mergeWithRules({
 });
 
 /**
- * @param {import("@rspack/core").Configuration & { PORT: string , MODE: "dev" | "prod" }} env
+ * @param {import("@rspack/core").Configuration & { PORT: string , STAGE: "dev" | "prod" | "shared" | "" | undefined }} env
  */
 export default (env, argv) => {
-    // Use base config (not -ts) to avoid ForkTsCheckerWebpackPlugin
+    const stage = env.STAGE || "prod";
+
     const defaultConfig = singleSpaDefaults({
-        orgName,
-        projectName,
+        orgName: ORG_NAME,
+        projectName: PROJECT_NAME,
         webpackConfigEnv: env,
         argv,
         disableHtmlGeneration: true,
     });
 
     return merge(defaultConfig, {
-        // Override entry to use .ts extension
+        plugins: [
+            new TsCheckerRspackPlugin(),
+            copyPlugin(CopyRspackPlugin),
+            htmlPlugin("Rspack", HtmlRspackPlugin, {
+                icon: "https://assets.rspack.rs/rspack/favicon-128x128.png",
+                sharedImportmap: importMapManager.shared(),
+                mfeImportmap: importMapManager.mfe(stage, env.PORT),
+                mode: stage,
+                layout: layoutManager.get("apps"),
+            }),
+        ],
+
         entry: defaultConfig.entry + ".ts",
         devServer: devServer(env),
-
-        // Use rspack's built-in tsConfig resolution + add TS extensions
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".json"],
             tsConfig: {
@@ -62,7 +61,6 @@ export default (env, argv) => {
 
         module: {
             rules: [
-                // Override babel-loader with builtin:swc-loader for TS/JS files
                 {
                     test: /\.(js|ts)x?$/,
                     exclude: [/[\\/]node_modules[\\/]/],
@@ -76,8 +74,8 @@ export default (env, argv) => {
                             transform: {
                                 react: {
                                     runtime: "automatic",
-                                    development: !prod,
-                                    refresh: !prod,
+                                    development: env.STAGE !== "prod",
+                                    refresh: env.STAGE !== "prod",
                                 },
                             },
                             externalHelpers: true,
@@ -89,22 +87,5 @@ export default (env, argv) => {
                 },
             ],
         },
-
-        plugins: [
-            new TsCheckerRspackPlugin(),
-            copyPlugin(CopyRspackPlugin, SHARED_DIR),
-            htmlPlugin(
-                "Rspack",
-                HtmlRspackPlugin,
-                {
-                    icon: "https://assets.rspack.rs/rspack/favicon-128x128.png",
-                    sharedImportmap: read(`${SHARED_DIR}/importmap.shared.json`),
-                    mfeImportmap: getMfeImportmap(read, SHARED_DIR, getImportmapPath(env.MODE === "dev"), env.PORT),
-                    mode: env.MODE || "prod",
-                    layout: read(`${SHARED_DIR}/${LAYOUT_FILE}`),
-                },
-                `${SHARED_DIR}/main.ejs`
-            ),
-        ],
     });
 };

@@ -1,0 +1,13 @@
+{
+    "name": "@razmio/shared",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "watch": "tsc --watch"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.5"
+    }
+}

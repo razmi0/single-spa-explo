@@ -1,6 +1,6 @@
 import { getAppNames, registerApplication, start } from "single-spa";
 import { constructApplications, constructLayoutEngine, constructRoutes } from "single-spa-layout";
-import "../../shared/index.css";
+import "../../shared/styles/index.css";
 
 const rootLayout = document.querySelector("#single-spa-layout")!;
 const routes = constructRoutes(rootLayout);

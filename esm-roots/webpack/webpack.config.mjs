@@ -3,29 +3,23 @@ import { merge } from "webpack-merge";
 import singleSpaDefaults from "webpack-config-single-spa-ts";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
-import {
-    createReader,
-    getSharedDir,
-    getImportmapPath,
-    getMfeImportmap,
-    LAYOUT_FILE,
-    ORG_NAME as orgName,
-    PROJECT_NAME as projectName,
-    copyPlugin,
-    htmlPlugin,
-    devServer,
-} from "../shared/main.js";
+import { ORG_NAME, PROJECT_NAME } from "../shared/dist/constants.js";
+import { copyPlugin, htmlPlugin, devServer } from "../shared/dist/main.js";
+import ImportMapManager from "../shared/dist/ImportMapManager.js";
+import LayoutManager from "../shared/dist/LayoutManager.js";
 
-const SHARED_DIR = getSharedDir(import.meta.url);
-const read = createReader(import.meta.url);
+const importMapManager = new ImportMapManager("content");
+const layoutManager = new LayoutManager("content");
 
 /**
- * @param {import("webpack").Configuration & { PORT: string , MODE: "dev" | "prod" }} env
+ * @param {import("webpack").Configuration & { PORT: string , STAGE: "dev" | "prod" | "shared" | "" | undefined }} env
  */
 export default (env, argv) => {
+    const stage = env.STAGE || "prod";
+
     const defaultConfig = singleSpaDefaults({
-        orgName,
-        projectName,
+        orgName: ORG_NAME,
+        projectName: PROJECT_NAME,
         webpackConfigEnv: env,
         argv,
         disableHtmlGeneration: true,
@@ -34,25 +28,14 @@ export default (env, argv) => {
     return merge(defaultConfig, {
         devServer: devServer(env),
         plugins: [
-            /**
-             * Copy shared importmap files
-             */
-            copyPlugin(CopyWebpackPlugin, SHARED_DIR),
-            /**
-             * ejs templating for the index.ejs
-             */
-            htmlPlugin(
-                "Webpack",
-                HtmlWebpackPlugin,
-                {
-                    icon: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1",
-                    sharedImportmap: read(`${SHARED_DIR}/importmap.shared.json`) || "",
-                    mfeImportmap: getMfeImportmap(read, SHARED_DIR, getImportmapPath(env.MODE === "dev"), env.PORT),
-                    mode: env.MODE || "prod",
-                    layout: read(`${SHARED_DIR}/${LAYOUT_FILE}`),
-                },
-                `${SHARED_DIR}/main.ejs`
-            ),
+            copyPlugin(CopyWebpackPlugin),
+            htmlPlugin("Webpack", HtmlWebpackPlugin, {
+                icon: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1",
+                sharedImportmap: importMapManager.shared(),
+                mfeImportmap: importMapManager.mfe(stage, env.PORT),
+                mode: stage,
+                layout: layoutManager.get("apps"),
+            }),
         ],
     });
 };
