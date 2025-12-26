@@ -3,10 +3,15 @@ import { mergeWithRules, CustomizeRule } from "webpack-merge";
 import singleSpaDefaults from "webpack-config-single-spa";
 import { rspack } from "@rspack/core";
 import { TsCheckerRspackPlugin } from "ts-checker-rspack-plugin";
-import { ORG_NAME, PROJECT_NAME } from "../shared/dist/constants.js";
-import { copyPlugin, htmlPlugin, devServer } from "../shared/dist/main.js";
-import ImportMapManager from "../shared/dist/ImportMapManager.js";
-import LayoutManager from "../shared/dist/LayoutManager.js";
+import {
+    ORG_NAME,
+    PROJECT_NAME,
+    copyPlugin,
+    htmlPlugin,
+    devServer,
+    ImportMapManager,
+    LayoutManager,
+} from "./shared/index.js";
 const { CopyRspackPlugin, HtmlRspackPlugin } = rspack;
 
 const importMapManager = new ImportMapManager("content");

@@ -1,8 +1,18 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import { ORG_NAME, PROJECT_NAME } from "./constants.js";
 
-const sharedDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// Re-export everything for single entry point
+export { ORG_NAME, PROJECT_NAME, LAYOUT_FILE } from "./constants.js";
+export { default as ImportMapManager } from "./ImportMapManager.js";
+export { default as LayoutManager } from "./LayoutManager.js";
+export type { Mode, ImportMapKey, ImportMapPath, ImportMapFiles, LayoutKey, LayoutPath, LayoutFiles } from "./types.js";
+
+// Resolve relative to the bundled file location (./shared/index.js)
+// When bundled, import.meta.url points to the output location
+const sharedDir = path.dirname(fileURLToPath(import.meta.url));
+
+// Import for internal use
+import { ORG_NAME, PROJECT_NAME } from "./constants.js";
 
 /** Copy shared assets to dist */
 export const copyPlugin = (instance: any) => {

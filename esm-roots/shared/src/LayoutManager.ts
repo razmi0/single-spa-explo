@@ -3,7 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import type { LayoutFiles, LayoutKey, Mode } from "./types";
 
-const sharedDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// Resolve relative to the bundled file location (./shared/index.js)
+// When bundled, import.meta.url points to the output location
+const sharedDir = path.dirname(fileURLToPath(import.meta.url));
 
 const readFile = (filePath: string): string => {
     try {

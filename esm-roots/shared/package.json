@@ -3,12 +3,11 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "build": "tsc",
-        "dev": "tsc --watch",
-        "watch": "tsc --watch"
+        "sync": "bun run sync.ts",
+        "sync:watch": "bun run sync.ts --watch"
     },
     "devDependencies": {
-        "@types/node": "^20.0.0",
-        "typescript": "^5.3.5"
+        "@types/bun": "^1.1.0",
+        "@types/node": "^20.0.0"
     }
 }
