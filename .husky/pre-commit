@@ -1,4 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running build..."
 npm run build || exit 1
+
+echo "Running benchmark..."
 npm run benchmark -- --runs 3 --warmup 1 || exit 1
 
 git add bench/results/benchmarks.json
