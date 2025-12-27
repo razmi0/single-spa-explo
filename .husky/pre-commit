@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/h"
+
+npm run build || exit 1
+npm run benchmark -- --runs 3 --warmup 1 || exit 1
+
+git add bench/results/benchmarks.json
