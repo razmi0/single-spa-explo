@@ -121,14 +121,15 @@ function benchmarkDevServer(bundlerKey, runs) {
 
             let output = "";
             let found = false;
+            const delay = 10000;
             const timeout = setTimeout(() => {
                 if (!found) {
-                    console.log(`   Run ${currentRun + 1}: TIMEOUT (30s)`);
+                    console.log(`   Run ${currentRun + 1}: TIMEOUT (${delay / 1000}s)`);
                     proc.kill("SIGTERM");
                     currentRun++;
                     setTimeout(runOnce, 500);
                 }
-            }, 30000);
+            }, delay);
 
             const handleData = (data) => {
                 output += data.toString();
@@ -225,7 +226,6 @@ function calculateStats(times) {
     };
 }
 
-// Store all results for consolidated output
 const allResults = {};
 
 // Save dev server results in hyperfine-compatible format
