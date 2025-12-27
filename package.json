@@ -2,11 +2,8 @@
     "name": "mfe-bundler-exploration",
     "private": true,
     "scripts": {
-        "prepare": "husky",
-        "benchmark": "node bench/benchmark.mjs",
-        "build": "cd esm-roots/shared && npm run build"
-    },
-    "devDependencies": {
-        "husky": "^9.1.7"
+        "build:shared": "cd esm-roots/shared && npm run build",
+        "build:bench": "node bench/benchmark.mjs",
+        "build": "npm run build:shared && npm run build:bench"
     }
 }
