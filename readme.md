@@ -60,3 +60,5 @@ For more options, see `bench/benchmark.mjs` :
 Options: `--bundler <vite|rspack|webpack>`, `--mode <dev|build>`, `--runs <n>`
 
 Results saved to `bench/results/benchmarks.json` and visualized in `bench/results/dashboard/`.
+
+---
