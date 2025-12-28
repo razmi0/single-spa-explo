@@ -9,7 +9,7 @@ export default (webpackConfigEnv, argv) => {
 
     const defaultConfig = singleSpaDefaults({
         orgName: "Razmio",
-        projectName: "rnd-2",
+        projectName: "webpack",
         webpackConfigEnv,
         argv,
         outputSystemJS: false,

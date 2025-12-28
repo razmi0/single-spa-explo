@@ -1,5 +1,5 @@
 {
-    "name": "@Razmio/Fed",
+    "name": "@Razmio/webpack",
     "scripts": {
         "start": "cross-env NODE_ENV=development BABEL_ENV=development webpack serve --port 3001",
         "start:standalone": "cross-env NODE_ENV=development BABEL_ENV=development webpack serve --env standalone",
@@ -58,5 +58,5 @@
         "single-spa": "^5.9.3",
         "single-spa-react": "^6.0.2"
     },
-    "types": "dist/Razmio-Fed.d.ts"
+    "types": "dist/Razmio-webpack.d.ts"
 }

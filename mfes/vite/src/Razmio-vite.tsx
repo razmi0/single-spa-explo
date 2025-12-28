@@ -22,7 +22,7 @@ const singleSpaLifeCycle = singleSpaReact({
 });
 
 // function domElementGetter() {
-//     const APPLICATION_NAME = "@Razmio/welcome";
+//     const APPLICATION_NAME = "@Razmio/vite";
 //     const APPLICATION_RENDERED_SUFFIX = "rendered";
 //     const APPLICATION_RENDERED_NAME = `${APPLICATION_NAME}_${APPLICATION_RENDERED_SUFFIX}`;
 
@@ -39,7 +39,7 @@ const singleSpaLifeCycle = singleSpaReact({
 // }
 
 export const { bootstrap, mount, unmount } = {
-    bootstrap: [cssLifecycleFactory("Razmio-welcome").bootstrap, singleSpaLifeCycle.bootstrap],
-    mount: [cssLifecycleFactory("Razmio-welcome").mount, singleSpaLifeCycle.mount],
-    unmount: [cssLifecycleFactory("Razmio-welcome").unmount, singleSpaLifeCycle.unmount],
+    bootstrap: [cssLifecycleFactory("Razmio-vite").bootstrap, singleSpaLifeCycle.bootstrap],
+    mount: [cssLifecycleFactory("Razmio-vite").mount, singleSpaLifeCycle.mount],
+    unmount: [cssLifecycleFactory("Razmio-vite").unmount, singleSpaLifeCycle.unmount],
 };

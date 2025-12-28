@@ -5,7 +5,7 @@ import vitePluginReactHMR from "../../configs/plugin-react-hmr";
 
 console.log("vitePluginReactHMR", vitePluginReactHMR);
 
-const ENTRY_POINTS = ["src/Razmio-welcome.tsx"];
+const ENTRY_POINTS = ["src/Razmio-vite.tsx"];
 const PORT = Number(process.env.PORT) || 3003;
 const BASE_URL_DEPLOYMENT = `http://localhost:${PORT}/`;
 
@@ -14,7 +14,7 @@ export default defineConfig(({ command }) => ({
     base: command === "serve" ? "/" : BASE_URL_DEPLOYMENT,
     resolve: {
         alias: {
-            "/Razmio-welcome.js": "/src/Razmio-welcome.tsx",
+            "/Razmio-vite.js": "/src/Razmio-vite.tsx",
         },
     },
     plugins: [
