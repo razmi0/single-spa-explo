@@ -27,6 +27,18 @@ cd esm-roots/shared && npm run build
 
 Pick a root config and run with the corresponding MFE(s).
 
+### All
+
+Run one time :
+
+```bash
+npm run build:shared
+```
+
+```bash
+npm run dev:all
+```
+
 ### Roots
 
 ```bash
