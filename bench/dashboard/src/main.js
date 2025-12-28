@@ -2,7 +2,7 @@ import "./style.css";
 import Chart from "chart.js/auto";
 
 // Import benchmark results using named exports from consolidated JSON
-import { viteBuild, rspackBuild, webpackBuild, viteDev, rspackDev, webpackDev } from "@results/benchmarks.json";
+import { viteBuild, rspackBuild, webpackBuild, viteDev, rspackDev, webpackDev } from "./benchmarks.json";
 
 // Bundler colors
 const colors = {

@@ -6,7 +6,7 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const RESULTS_DIR = resolve(__dirname, "results");
+const RESULTS_DIR = resolve(__dirname, "results/dashboard");
 const BENCH_PORT = 4678;
 
 // Bundler configurations

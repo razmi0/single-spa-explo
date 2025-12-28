@@ -85,20 +85,20 @@ node bench/benchmark.mjs --bundler vite --mode dev --runs 10
 
 ## Results
 
-JSON results are saved to `bench/results/`:
+Benchmark results are saved to `bench/results/dashboard/benchmarks.json` as a consolidated JSON file containing all benchmark data for all bundlers.
 
-- `vite-dev.json`, `vite-build.json`
-- `rspack-dev.json`, `rspack-build.json`
-- `webpack-dev.json`, `webpack-build.json`
+The benchmark script saves intermediate build JSON files temporarily but cleans them up after consolidating the results.
 
 ## Dashboard
 
 View results visually:
 
 ```bash
-cd bench/results/dashboard
+cd bench/dashboard
 npm install
 npm run dev
 ```
 
 Open <http://localhost:5173> to see the benchmark dashboard.
+
+The dashboard reads benchmark data from `bench/results/dashboard/benchmarks.json`.
