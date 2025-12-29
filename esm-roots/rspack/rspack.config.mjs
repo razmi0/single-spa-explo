@@ -16,6 +16,8 @@ import {
 } from "./shared/index.js";
 const { CopyRspackPlugin, HtmlRspackPlugin } = rspack;
 
+const DEFAULT_PORT = 3000;
+
 const merge = mergeWithRules({
     module: {
         rules: {
@@ -34,7 +36,7 @@ export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
 
-    const { ROOT_PORT, ROOT_URL } = process.env;
+    const { ROOT_PORT = DEFAULT_PORT, ROOT_URL } = process.env;
 
     const importMapManager = new ImportMapManager().withStage(stage).withRootUrl(ROOT_URL);
     const layoutManager = new LayoutManager("content");

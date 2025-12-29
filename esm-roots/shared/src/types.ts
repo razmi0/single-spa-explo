@@ -1,5 +1,4 @@
 export type ImportMapMode = "content" | "path";
-export type Mode = ImportMapMode;
 export type ImportMapOptions = {
     rootUrl?: string | undefined;
     stage: ImportMapKey;

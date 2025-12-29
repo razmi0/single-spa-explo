@@ -15,6 +15,8 @@ import {
     LayoutManager,
 } from "./shared/index.js";
 
+const DEFAULT_PORT = 2999;
+
 /**
  * @param {import("webpack").Configuration & { PORT: string , STAGE: "dev" | "prod" | "shared" | "" | undefined }} env
  */
@@ -22,7 +24,7 @@ export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
 
-    const { ROOT_PORT, ROOT_URL } = process.env;
+    const { ROOT_PORT = DEFAULT_PORT, ROOT_URL } = process.env;
 
     const importMapManager = new ImportMapManager().withStage(stage).withRootUrl(ROOT_URL);
     const layoutManager = new LayoutManager("content");
