@@ -2,13 +2,13 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import { ViteEjsPlugin as ejsPlugin } from "vite-plugin-ejs";
 import singleSpaPlugin from "vite-plugin-single-spa";
-import { ImportMapManager, LayoutManager, ORG_NAME, PROJECT_NAME } from "./shared/index.js";
+import { ImportMapManager, LayoutManager, ORG_NAME, PROJECT_NAME, type ImportMapKey } from "./shared/index.js";
 
 const port = 2998;
 const envLoader = (mode: string) => loadEnv(mode, process.cwd(), "VITE_");
 
 export default defineConfig(({ mode }) => {
-    const stage = envLoader(mode).VITE_IMPORTMAP_TYPE || "prod";
+    const stage = (envLoader(mode).VITE_IMPORTMAP_TYPE || "prod") as ImportMapKey;
     const rootUrl = envLoader(mode).VITE_ROOT_URL;
 
     // Vite uses "path" mode - singleSpaPlugin reads the files itself

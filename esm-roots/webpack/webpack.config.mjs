@@ -21,6 +21,7 @@ import {
 export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
+    console.log(process.env.ROOT_URL);
     const importMapManager = new ImportMapManager({ mode: "content", rootUrl: process.env.ROOT_URL });
     const layoutManager = new LayoutManager("content");
 

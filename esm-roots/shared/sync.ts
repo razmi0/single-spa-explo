@@ -10,6 +10,7 @@
 
 import { $ } from "bun";
 import { watch } from "fs";
+import { readdir } from "fs/promises";
 import { join, relative } from "path";
 
 const SHARED_DIR = import.meta.dir;
@@ -47,6 +48,23 @@ async function bundle(): Promise<boolean> {
     return true;
 }
 
+async function generateDeclarations(): Promise<boolean> {
+    // Generate .d.ts files using tsc (via bunx for Bun compatibility)
+    const tscResult = await $`bunx tsc --emitDeclarationOnly --declaration --outDir ${join(
+        SHARED_DIR,
+        "dist"
+    )}`.quiet();
+
+    if (tscResult.exitCode !== 0) {
+        console.error("❌ Declaration generation failed:");
+        console.error(tscResult.stderr.toString());
+        return false;
+    }
+
+    console.log("📝 Generated TypeScript declarations → dist/*.d.ts");
+    return true;
+}
+
 async function copyAssets(targetDir: string): Promise<void> {
     // Ensure target directory exists
     await $`mkdir -p ${targetDir}`;
@@ -55,6 +73,19 @@ async function copyAssets(targetDir: string): Promise<void> {
     const bundledFile = join(SHARED_DIR, "dist/main.js");
     const targetIndex = join(targetDir, "index.js");
     await Bun.write(targetIndex, Bun.file(bundledFile));
+
+    // Copy declaration files
+    const distDir = join(SHARED_DIR, "dist");
+    const distFiles = await readdir(distDir);
+    const dtsFiles = distFiles.filter((f) => f.endsWith(".d.ts"));
+
+    for (const dtsFile of dtsFiles) {
+        const srcPath = join(distDir, dtsFile);
+        // Rename main.d.ts to index.d.ts, keep others as-is
+        const destName = dtsFile === "main.d.ts" ? "index.d.ts" : dtsFile;
+        const destPath = join(targetDir, destName);
+        await Bun.write(destPath, Bun.file(srcPath));
+    }
 
     // Copy asset directories
     for (const dir of ASSET_DIRS) {
@@ -72,6 +103,9 @@ async function syncAll(): Promise<void> {
 
     const bundleSuccess = await bundle();
     if (!bundleSuccess) return;
+
+    const declSuccess = await generateDeclarations();
+    if (!declSuccess) return;
 
     for (const target of TARGETS) {
         await copyAssets(target);
