@@ -2,40 +2,92 @@
 
 import { spawn, exec } from "child_process";
 import { writeFileSync, readFileSync, mkdirSync, existsSync, unlinkSync } from "fs";
-import { resolve, dirname } from "path";
+import { resolve, dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = resolve(__dirname, "./dashboard");
 const BENCH_PORT = 4678;
 
+// Environment configuration for benchmarks
+const ENV_CONFIG = {
+    // Common env vars for rspack/webpack (.env.dev)
+    rspackWebpack: {
+        ROOT_PORT: String(BENCH_PORT),
+        ROOT_URL: `http://localhost:${BENCH_PORT}`,
+    },
+    // Vite env vars (.env.dev)
+    vite: {
+        VITE_PORT: String(BENCH_PORT),
+        VITE_ROOT_URL: `http://localhost:${BENCH_PORT}`,
+        VITE_IMPORTMAP_TYPE: "dev",
+    },
+};
+
 // Bundler configurations
 const bundlers = {
     vite: {
         name: "Vite",
         cwd: resolve(__dirname, "../esm-roots/vite"),
-        devCommand: ["npm", ["run", "dev", "--", "--port", String(BENCH_PORT)]],
+        devCommand: ["npm", ["run", "dev"]],
         buildCommand: "npm run build",
         // Pattern: "VITE v5.4.21  ready in 112 ms"
         readyPattern: /ready in (\d+)\s*ms/i,
+        envType: "vite",
     },
     rspack: {
         name: "Rspack",
         cwd: resolve(__dirname, "../esm-roots/rspack"),
-        devCommand: ["npm", ["run", "serve", "--", "--env", `PORT=${BENCH_PORT}`]],
+        devCommand: ["npm", ["run", "serve"]],
         buildCommand: "npm run build",
         // Pattern: "Rspack compiled successfully in 228 ms"
         readyPattern: /compiled successfully in (\d+)\s*ms/i,
+        envType: "rspackWebpack",
     },
     webpack: {
         name: "Webpack",
         cwd: resolve(__dirname, "../esm-roots/webpack"),
-        devCommand: ["npm", ["run", "serve", "--", "--env", `PORT=${BENCH_PORT}`]],
+        devCommand: ["npm", ["run", "serve"]],
         buildCommand: "npm run build",
         // Pattern: "webpack 5.103.0 compiled successfully in 452 ms"
         readyPattern: /compiled successfully in (\d+)\s*ms/i,
+        envType: "rspackWebpack",
     },
 };
+
+// Create .env file content from config object
+function createEnvContent(config) {
+    return Object.entries(config)
+        .map(([key, value]) => `${key}=${value}`)
+        .join("\n");
+}
+
+// Setup environment files for a bundler
+function setupEnvFiles(bundlerKey) {
+    const bundler = bundlers[bundlerKey];
+    const envConfig = ENV_CONFIG[bundler.envType];
+
+    // Create .env.dev (used by dev server)
+    const devEnvPath = join(bundler.cwd, ".env.dev");
+    const devContent = createEnvContent(envConfig);
+    writeFileSync(devEnvPath, devContent);
+
+    // Create .env.prod (used by build)
+    const prodEnvPath = join(bundler.cwd, ".env.prod");
+    const prodContent = createEnvContent(envConfig);
+    writeFileSync(prodEnvPath, prodContent);
+
+    return [devEnvPath, prodEnvPath];
+}
+
+// Cleanup environment files
+function cleanupEnvFiles(envPaths) {
+    for (const envPath of envPaths) {
+        if (existsSync(envPath)) {
+            unlinkSync(envPath);
+        }
+    }
+}
 
 // Parse CLI arguments
 function parseArgs() {
@@ -45,6 +97,7 @@ function parseArgs() {
         mode: "all",
         runs: 5,
         warmup: 2,
+        keepEnv: false,
     };
 
     for (let i = 0; i < args.length; i++) {
@@ -64,6 +117,10 @@ function parseArgs() {
             case "--warmup":
             case "-w":
                 options.warmup = parseInt(args[++i], 10);
+                break;
+            case "--keep-env":
+            case "-k":
+                options.keepEnv = true;
                 break;
             case "--help":
             case "-h":
@@ -86,6 +143,7 @@ Options:
   --mode, -m <mode>      Benchmark mode: dev, build, all (default: all)
   --runs, -r <number>    Number of benchmark runs (default: 5)
   --warmup, -w <number>  Number of warmup runs for builds (default: 2)
+  --keep-env, -k         Keep generated .env files after benchmark (default: false)
   --help, -h             Show this help message
 
 Examples:
@@ -294,45 +352,69 @@ async function main() {
 
     const bundlersToRun = options.bundler === "all" ? Object.keys(bundlers) : [options.bundler];
 
+    // Track all env files created
+    const allEnvFiles = [];
+
+    // Setup environment files for all bundlers to run
+    console.log("\n🔧 Setting up environment files...");
     for (const bundlerKey of bundlersToRun) {
         if (!bundlers[bundlerKey]) {
             console.error(`Unknown bundler: ${bundlerKey}`);
             continue;
         }
-
-        console.log(`\n------------------------------------------`);
-        console.log(`🔧 ${bundlers[bundlerKey].name}`);
-        console.log(`------------------------------------------`);
-
-        // Dev server benchmark
-        if (options.mode === "all" || options.mode === "dev") {
-            try {
-                const times = await benchmarkDevServer(bundlerKey, options.runs);
-                if (times.length > 0) {
-                    const stats = calculateStats(times);
-                    console.log(`   Mean: ${(stats.mean * 1000).toFixed(0)} ms`);
-                    console.log(`   Stddev: ${(stats.stddev * 1000).toFixed(0)} ms`);
-                    saveDevResults(bundlerKey, times);
-                }
-            } catch (err) {
-                console.error(`   Dev benchmark failed: ${err.message}`);
-            }
-        }
-
-        // Build benchmark
-        if (options.mode === "all" || options.mode === "build") {
-            try {
-                const outputFile = await benchmarkBuild(bundlerKey, options.runs, options.warmup);
-                saveBuildResults(bundlerKey, outputFile);
-            } catch (err) {
-                console.error(`   Build benchmark failed: ${err.message}`);
-            }
-        }
+        const envFiles = setupEnvFiles(bundlerKey);
+        allEnvFiles.push(...envFiles);
+        console.log(`   Created .env files for ${bundlers[bundlerKey].name}`);
     }
 
-    // Save consolidated results and clean up intermediate files
-    saveConsolidatedResults();
-    cleanupIntermediateFiles();
+    try {
+        for (const bundlerKey of bundlersToRun) {
+            if (!bundlers[bundlerKey]) {
+                continue;
+            }
+
+            console.log(`\n------------------------------------------`);
+            console.log(`🔧 ${bundlers[bundlerKey].name}`);
+            console.log(`------------------------------------------`);
+
+            // Dev server benchmark
+            if (options.mode === "all" || options.mode === "dev") {
+                try {
+                    const times = await benchmarkDevServer(bundlerKey, options.runs);
+                    if (times.length > 0) {
+                        const stats = calculateStats(times);
+                        console.log(`   Mean: ${(stats.mean * 1000).toFixed(0)} ms`);
+                        console.log(`   Stddev: ${(stats.stddev * 1000).toFixed(0)} ms`);
+                        saveDevResults(bundlerKey, times);
+                    }
+                } catch (err) {
+                    console.error(`   Dev benchmark failed: ${err.message}`);
+                }
+            }
+
+            // Build benchmark
+            if (options.mode === "all" || options.mode === "build") {
+                try {
+                    const outputFile = await benchmarkBuild(bundlerKey, options.runs, options.warmup);
+                    saveBuildResults(bundlerKey, outputFile);
+                } catch (err) {
+                    console.error(`   Build benchmark failed: ${err.message}`);
+                }
+            }
+        }
+
+        // Save consolidated results and clean up intermediate files
+        saveConsolidatedResults();
+        cleanupIntermediateFiles();
+    } finally {
+        // Cleanup environment files unless --keep-env is specified
+        if (!options.keepEnv) {
+            console.log("\n🧹 Cleaning up environment files...");
+            cleanupEnvFiles(allEnvFiles);
+        } else {
+            console.log("\n📁 Keeping environment files (--keep-env)");
+        }
+    }
 
     console.log("\n==========================================");
     console.log("✅ Benchmarks complete!");
