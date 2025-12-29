@@ -1,34 +1,43 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import vitePluginSingleSpa from "vite-plugin-single-spa";
 import vitePluginReactHMR from "../../configs/plugin-react-hmr";
 
-console.log("vitePluginReactHMR", vitePluginReactHMR);
+const ORG_NAME = "Razmio";
+const PROJECT_NAME = "vite";
+const ENTRY_FILE = `${ORG_NAME}-${PROJECT_NAME}.tsx`;
+const ALIAS = {
+    [`/${ENTRY_FILE}`]: `/src/${ENTRY_FILE}`,
+};
+const ENTRY_POINTS = [`src/${ENTRY_FILE}`];
+const DEFAULT_PORT = 3003;
 
-const ENTRY_POINTS = ["src/Razmio-vite.tsx"];
-const PORT = Number(process.env.PORT) || 3003;
-const BASE_URL_DEPLOYMENT = `http://localhost:${PORT}/`;
+const envLoader = (mode: string) => loadEnv(mode, process.cwd(), "VITE_");
 
-export default defineConfig(({ command }) => ({
-    // the base url is injected into any assets to ensure they're http references in production (not relative paths)
-    base: command === "serve" ? "/" : BASE_URL_DEPLOYMENT,
-    resolve: {
-        alias: {
-            "/Razmio-vite.js": "/src/Razmio-vite.tsx",
+export default defineConfig(({ command, mode }) => {
+    const { VITE_BASE_URL, VITE_PORT } = envLoader(mode);
+    const port = Number(VITE_PORT || DEFAULT_PORT);
+    const baseUrl = VITE_BASE_URL || `http://localhost:${port}/`;
+    const base = command === "serve" ? "/" : baseUrl;
+    const hmr = command === "serve" && vitePluginReactHMR();
+
+    return {
+        base,
+        resolve: {
+            alias: ALIAS,
         },
-    },
-    plugins: [
-        react(),
-        command === "serve" && vitePluginReactHMR(),
-        vitePluginSingleSpa({
-            type: "mife",
-            serverPort: Number(process.env.PORT) || 3003,
-            spaEntryPoints: ENTRY_POINTS,
-        }),
-    ],
-    esbuild: {},
-    build: {
-        minify: false,
-        rollupOptions: { external: ["react", "react-dom"] },
-    },
-}));
+        plugins: [
+            react(),
+            hmr,
+            vitePluginSingleSpa({
+                type: "mife",
+                serverPort: port,
+                spaEntryPoints: ENTRY_POINTS,
+            }),
+        ].filter(Boolean),
+        build: {
+            minify: false,
+            rollupOptions: { external: ["react", "react-dom"] },
+        },
+    };
+});

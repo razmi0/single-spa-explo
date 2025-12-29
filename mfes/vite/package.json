@@ -5,11 +5,11 @@
     "type": "module",
     "scripts": {
         "start": "npm run dev",
-        "dev": "vite",
-        "build": "tsc --noEmit && vite build",
-        "start:build": "vite preview",
+        "dev": "vite --mode dev",
+        "build": "tsc --noEmit && vite build --mode prod",
+        "start:build": "vite preview --mode prod",
         "lint": "eslint .",
-        "preview": "vite preview"
+        "preview": "vite preview --mode prod"
     },
     "dependencies": {
         "react": "18.3.1",
