@@ -5,7 +5,15 @@ import { fileURLToPath } from "url";
 export { LAYOUT_FILE, ORG_NAME, PROJECT_NAME } from "./constants.js";
 export { default as ImportMapManager } from "./ImportMapManager.js";
 export { default as LayoutManager } from "./LayoutManager.js";
-export type { ImportMapFiles, ImportMapKey, ImportMapPath, LayoutFiles, LayoutKey, LayoutPath, Mode } from "./types.js";
+export type {
+    ImportMapFiles,
+    ImportMapKey,
+    ImportMapMode,
+    ImportMapPath,
+    LayoutFiles,
+    LayoutKey,
+    LayoutPath,
+} from "./types.js";
 
 // Resolve relative to the bundled file location (./shared/index.js)
 // When bundled, import.meta.url points to the output location
@@ -41,9 +49,9 @@ export const htmlPlugin = (tech: string, instance: any, templateParams: Record<s
     });
 };
 
-export const devServer = (env: { PORT: string }) => ({
+export const devServer = (port: number) => ({
     hot: true,
-    port: Number(env.PORT),
+    port: Number(port),
 
     setupMiddlewares: (middlewares: any, devServer: any) => {
         if (!devServer) return middlewares;

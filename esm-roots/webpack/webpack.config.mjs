@@ -21,9 +21,13 @@ import {
 export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
-    console.log(process.env.ROOT_URL);
-    const importMapManager = new ImportMapManager({ mode: "content", rootUrl: process.env.ROOT_URL });
+
+    const { ROOT_PORT, ROOT_URL } = process.env;
+
+    const importMapManager = new ImportMapManager().withStage(stage).withRootUrl(ROOT_URL);
     const layoutManager = new LayoutManager("content");
+    const shared = importMapManager.shared("content");
+    const mfes = importMapManager.mfe("content");
 
     const defaultConfig = singleSpaDefaults({
         orgName: ORG_NAME,
@@ -34,13 +38,13 @@ export default (env, argv) => {
     });
 
     return merge(defaultConfig, {
-        devServer: devServer(env),
+        devServer: devServer(Number(ROOT_PORT)),
         plugins: [
             copyPlugin(CopyWebpackPlugin),
             htmlPlugin("Webpack", HtmlWebpackPlugin, {
                 icon: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1",
-                sharedImportmap: importMapManager.shared(),
-                mfeImportmap: importMapManager.mfe(stage, env.PORT),
+                sharedImportmap: shared,
+                mfeImportmap: mfes,
                 mode: stage,
                 layout: layoutManager.get("apps"),
             }),

@@ -1,7 +1,8 @@
-export type Mode = "content" | "path";
+export type ImportMapMode = "content" | "path";
+export type Mode = ImportMapMode;
 export type ImportMapOptions = {
-    mode: Mode;
     rootUrl?: string | undefined;
+    stage: ImportMapKey;
 };
 export type ImportMapKey = "dev" | "local" | "prod" | "shared";
 export type ImportMapPath = `./importmaps/importmap${`.${Exclude<ImportMapKey, "prod">}` | ""}.json`;

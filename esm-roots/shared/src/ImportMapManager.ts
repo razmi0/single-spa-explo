@@ -2,8 +2,9 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { ORG_NAME, PROJECT_NAME } from "./constants.js";
-import type { ImportMapFiles, ImportMapKey, ImportMapOptions } from "./types";
+import type { ImportMapFiles, ImportMapKey, ImportMapMode, ImportMapOptions } from "./types";
 
+// about importmap import type that differ from bundlers :
 // "content" mode is used by webpack/ rspack essentially
 // "path" mode is used by vite
 
@@ -29,52 +30,72 @@ export default class ImportMapManager {
         prod: path.join(sharedDir, "importmaps/importmap.json"),
     } as ImportMapFiles;
 
-    constructor(private options: ImportMapOptions = { mode: "content" }) {}
+    private options: ImportMapOptions = { stage: "prod" };
 
-    shared() {
-        switch (this.options.mode) {
+    constructor() {}
+
+    /**
+     * Return the shared importmap
+     * - content: return the importmap content
+     * - path: return the importmap file path
+     */
+    shared(mode: ImportMapMode) {
+        switch (mode) {
             case "content":
                 return readFile(this.FILES.shared);
             case "path":
                 return this.FILES.shared;
             default:
-                throw new Error(`Unknown mode: ${this.options.mode}`);
+                throw new Error(`Unknown mode: ${mode}`);
         }
     }
 
-    mfe(stage: ImportMapKey = "prod", port?: string | number) {
-        if (!Object.keys(this.FILES).includes(stage)) {
-            throw new Error(`Invalid stage: ${stage}. Expect ${Object.keys(this.FILES).join("| ")}\n`);
+    /**
+     * If given, the root url will be overridden in the importmap
+     */
+    withRootUrl(rootUrl: string | undefined) {
+        this.options.rootUrl = rootUrl;
+        return this;
+    }
+
+    withStage(stage: ImportMapKey) {
+        this.options.stage = stage;
+        return this;
+    }
+
+    /**
+     * Return the mfe importmap
+     * - content: return the importmap content
+     * - path: return the importmap file path
+     */
+    mfe(mode: ImportMapMode) {
+        if (!Object.keys(this.FILES).includes(this.options.stage)) {
+            throw new Error(`Invalid stage: ${this.options.stage}. Expect ${Object.keys(this.FILES).join("| ")}\n`);
         }
 
-        switch (this.options.mode) {
+        switch (mode) {
             case "content":
-                const content = readFile(this.FILES[stage]);
-                if (port) return this.overridePort(content, port);
+                const content = readFile(this.FILES[this.options.stage]);
                 if (this.options.rootUrl) return this.overrideRootUrl(content, this.options.rootUrl);
                 return content;
             case "path":
-                if (port || this.options.rootUrl) {
-                    const content = readFile(this.FILES[stage]);
-                    if (port) fs.writeFileSync(this.FILES[stage], this.overridePort(content, port));
+                if (this.options.rootUrl) {
+                    const content = readFile(this.FILES[this.options.stage]);
                     if (this.options.rootUrl)
-                        fs.writeFileSync(this.FILES[stage], this.overrideRootUrl(content, this.options.rootUrl));
+                        fs.writeFileSync(
+                            this.FILES[this.options.stage],
+                            this.overrideRootUrl(content, this.options.rootUrl)
+                        );
                 }
-                return this.FILES[stage];
+                return this.FILES[this.options.stage];
             default:
-                throw new Error(`Unknown mode: ${this.options.mode}`);
+                throw new Error(`Unknown mode: ${mode}`);
         }
-    }
-
-    private overridePort(content: string, port: string | number): string {
-        const importmap = JSON.parse(content);
-        importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = `http://localhost:${port}/${ORG_NAME}-${PROJECT_NAME}.js`;
-        return JSON.stringify(importmap, null, 4);
     }
 
     private overrideRootUrl(content: string, rootUrl: string): string {
         const importmap = JSON.parse(content);
-        importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = `${rootUrl}${ORG_NAME}-${PROJECT_NAME}.js`;
+        importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = new URL(`${ORG_NAME}-${PROJECT_NAME}.js`, rootUrl).href;
         return JSON.stringify(importmap, null, 4);
     }
 }

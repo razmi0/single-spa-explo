@@ -4,9 +4,9 @@
         "lint": "eslint src --ext js,ts,tsx",
         "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
         "start": "npm run serve",
-        "serve": "cross-env NODE_ENV=development rspack serve --env PORT=3000 --env STAGE=dev",
+        "serve": "cross-env NODE_ENV=development rspack serve --env STAGE=dev",
         "build": "cross-env NODE_ENV=production rspack build --env STAGE=prod",
-        "preview": "cross-env NODE_ENV=production rspack preview --env PORT=3000 --port 3000 --env STAGE=prod"
+        "preview": "cross-env NODE_ENV=production rspack preview --port 3000 --env STAGE=prod"
     },
     "devDependencies": {
         "@rspack/cli": "^1.6.8",

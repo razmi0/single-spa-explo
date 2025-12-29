@@ -34,10 +34,12 @@ export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
 
-    const importMapManager = new ImportMapManager({ mode: "content", rootUrl: process.env.ROOT_URL });
+    const { ROOT_PORT, ROOT_URL } = process.env;
+
+    const importMapManager = new ImportMapManager().withStage(stage).withRootUrl(ROOT_URL);
     const layoutManager = new LayoutManager("content");
-    const shared = importMapManager.shared();
-    const mfes = importMapManager.mfe(stage, env.PORT);
+    const shared = importMapManager.shared("content");
+    const mfes = importMapManager.mfe("content");
 
     const defaultConfig = singleSpaDefaults({
         orgName: ORG_NAME,
@@ -61,7 +63,7 @@ export default (env, argv) => {
         ],
 
         entry: defaultConfig.entry + ".ts",
-        devServer: devServer(env),
+        devServer: devServer(Number(ROOT_PORT)),
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".json"],
             tsConfig: {

@@ -5,11 +5,11 @@ import vitePluginReactHMR from "../../configs/plugin-react-hmr";
 
 const ORG_NAME = "Razmio";
 const PROJECT_NAME = "vite";
-const ENTRY_FILE = `${ORG_NAME}-${PROJECT_NAME}.tsx`;
+const ENTRY_FILE = `${ORG_NAME}-${PROJECT_NAME}`;
 const ALIAS = {
-    [`/${ENTRY_FILE}`]: `/src/${ENTRY_FILE}`,
+    [`/${ENTRY_FILE}.js`]: `/src/${ENTRY_FILE}.tsx`,
 };
-const ENTRY_POINTS = [`src/${ENTRY_FILE}`];
+const ENTRY_POINTS = [`src/${ENTRY_FILE}.tsx`];
 const DEFAULT_PORT = 3003;
 
 const envLoader = (mode: string) => loadEnv(mode, process.cwd(), "VITE_");
@@ -19,22 +19,21 @@ export default defineConfig(({ command, mode }) => {
     const port = Number(VITE_PORT || DEFAULT_PORT);
     const baseUrl = VITE_BASE_URL || `http://localhost:${port}/`;
     const base = command === "serve" ? "/" : baseUrl;
-    const hmr = command === "serve" && vitePluginReactHMR();
+    const hmr = () => command === "serve" && vitePluginReactHMR();
+    const singleSpaPlugin = () =>
+        command === "serve" &&
+        vitePluginSingleSpa({
+            type: "mife",
+            serverPort: port,
+            spaEntryPoints: ENTRY_POINTS,
+        });
 
     return {
         base,
         resolve: {
             alias: ALIAS,
         },
-        plugins: [
-            react(),
-            hmr,
-            vitePluginSingleSpa({
-                type: "mife",
-                serverPort: port,
-                spaEntryPoints: ENTRY_POINTS,
-            }),
-        ].filter(Boolean),
+        plugins: [react(), hmr(), singleSpaPlugin()].filter(Boolean),
         build: {
             minify: false,
             rollupOptions: { external: ["react", "react-dom"] },
