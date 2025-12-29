@@ -5,7 +5,7 @@
         "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
         "start": "npm run serve",
         "serve": "cross-env NODE_ENV=development rspack serve --env PORT=3000 --env STAGE=dev",
-        "build": "cross-env NODE_ENV=production rspack build",
+        "build": "cross-env NODE_ENV=production rspack build --env STAGE=prod",
         "preview": "cross-env NODE_ENV=production rspack preview --env PORT=3000 --port 3000 --env STAGE=prod"
     },
     "devDependencies": {
@@ -23,6 +23,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "dotenv": "^17.2.3",
         "single-spa": "^5.9.3",
         "single-spa-layout": "^1.6.0"
     },

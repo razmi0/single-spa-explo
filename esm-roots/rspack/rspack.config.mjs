@@ -1,4 +1,5 @@
 //@ts-check
+import { config } from "dotenv";
 import { mergeWithRules, CustomizeRule } from "webpack-merge";
 import singleSpaDefaults from "webpack-config-single-spa";
 import { rspack } from "@rspack/core";
@@ -9,13 +10,11 @@ import {
     copyPlugin,
     htmlPlugin,
     devServer,
+    loadEnv,
     ImportMapManager,
     LayoutManager,
 } from "./shared/index.js";
 const { CopyRspackPlugin, HtmlRspackPlugin } = rspack;
-
-const importMapManager = new ImportMapManager("content");
-const layoutManager = new LayoutManager("content");
 
 const merge = mergeWithRules({
     module: {
@@ -29,10 +28,16 @@ const merge = mergeWithRules({
 });
 
 /**
- * @param {import("@rspack/core").Configuration & { PORT: string , STAGE: "dev" | "prod" | "shared" | "" | undefined }} env
+ * @param {import("@rspack/core").Configuration & { PORT: string , STAGE: "dev" | "prod" | "" | undefined }} env
  */
 export default (env, argv) => {
     const stage = env.STAGE || "prod";
+    loadEnv(config, stage);
+
+    const importMapManager = new ImportMapManager({ mode: "content", rootUrl: process.env.ROOT_URL });
+    const layoutManager = new LayoutManager("content");
+    const shared = importMapManager.shared();
+    const mfes = importMapManager.mfe(stage, env.PORT);
 
     const defaultConfig = singleSpaDefaults({
         orgName: ORG_NAME,
@@ -48,8 +53,8 @@ export default (env, argv) => {
             copyPlugin(CopyRspackPlugin),
             htmlPlugin("Rspack", HtmlRspackPlugin, {
                 icon: "https://assets.rspack.rs/rspack/favicon-128x128.png",
-                sharedImportmap: importMapManager.shared(),
-                mfeImportmap: importMapManager.mfe(stage, env.PORT),
+                sharedImportmap: shared,
+                mfeImportmap: mfes,
                 mode: stage,
                 layout: layoutManager.get("apps"),
             }),

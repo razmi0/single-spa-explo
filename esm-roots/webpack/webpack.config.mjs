@@ -1,4 +1,5 @@
 //@ts-check
+import { config } from "dotenv";
 import { merge } from "webpack-merge";
 import singleSpaDefaults from "webpack-config-single-spa-ts";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -9,18 +10,19 @@ import {
     copyPlugin,
     htmlPlugin,
     devServer,
+    loadEnv,
     ImportMapManager,
     LayoutManager,
 } from "./shared/index.js";
-
-const importMapManager = new ImportMapManager("content");
-const layoutManager = new LayoutManager("content");
 
 /**
  * @param {import("webpack").Configuration & { PORT: string , STAGE: "dev" | "prod" | "shared" | "" | undefined }} env
  */
 export default (env, argv) => {
     const stage = env.STAGE || "prod";
+    loadEnv(config, stage);
+    const importMapManager = new ImportMapManager({ mode: "content", rootUrl: process.env.ROOT_URL });
+    const layoutManager = new LayoutManager("content");
 
     const defaultConfig = singleSpaDefaults({
         orgName: ORG_NAME,

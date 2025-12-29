@@ -2,10 +2,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // Re-export everything for single entry point
-export { ORG_NAME, PROJECT_NAME, LAYOUT_FILE } from "./constants.js";
+export { LAYOUT_FILE, ORG_NAME, PROJECT_NAME } from "./constants.js";
 export { default as ImportMapManager } from "./ImportMapManager.js";
 export { default as LayoutManager } from "./LayoutManager.js";
-export type { Mode, ImportMapKey, ImportMapPath, ImportMapFiles, LayoutKey, LayoutPath, LayoutFiles } from "./types.js";
+export type { ImportMapFiles, ImportMapKey, ImportMapPath, LayoutFiles, LayoutKey, LayoutPath, Mode } from "./types.js";
 
 // Resolve relative to the bundled file location (./shared/index.js)
 // When bundled, import.meta.url points to the output location
@@ -54,3 +54,26 @@ export const devServer = (env: { PORT: string }) => ({
         return middlewares;
     },
 });
+
+export const loadEnv = (dotenvConfig: any, mode: string) => {
+    switch (mode) {
+        case "dev":
+            dotenvConfig({ path: `.env.dev`, override: true });
+            break;
+        case "prod":
+            dotenvConfig({ path: `.env.prod`, override: true });
+            break;
+        case "shared":
+            dotenvConfig({ path: `.env.dev`, override: true });
+            break;
+        case "local":
+            dotenvConfig({ path: `.env.dev`, override: true });
+            break;
+        case "test":
+            dotenvConfig({ path: `.env.test`, override: true });
+            break;
+        default:
+            dotenvConfig();
+            break;
+    }
+};

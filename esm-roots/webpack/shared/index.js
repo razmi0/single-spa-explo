@@ -22,24 +22,24 @@ var readFile = (filePath) => {
 };
 
 class ImportMapManager {
-  mode;
+  options;
   FILES = {
     dev: path.join(sharedDir, "importmaps/importmap.dev.json"),
     local: path.join(sharedDir, "importmaps/importmap.local.json"),
     shared: path.join(sharedDir, "importmaps/importmap.shared.json"),
     prod: path.join(sharedDir, "importmaps/importmap.json")
   };
-  constructor(mode = "content") {
-    this.mode = mode;
+  constructor(options = { mode: "content" }) {
+    this.options = options;
   }
   shared() {
-    switch (this.mode) {
+    switch (this.options.mode) {
       case "content":
         return readFile(this.FILES.shared);
       case "path":
         return this.FILES.shared;
       default:
-        throw new Error(`Unknown mode: ${this.mode}`);
+        throw new Error(`Unknown mode: ${this.options.mode}`);
     }
   }
   mfe(stage = "prod", port) {
@@ -47,21 +47,35 @@ class ImportMapManager {
       throw new Error(`Invalid stage: ${stage}. Expect ${Object.keys(this.FILES).join("| ")}
 `);
     }
-    switch (this.mode) {
+    switch (this.options.mode) {
       case "content":
         const content = readFile(this.FILES[stage]);
-        if (!port)
-          return content;
-        return this.overridePort(content, port);
+        if (port)
+          return this.overridePort(content, port);
+        if (this.options.rootUrl)
+          return this.overrideRootUrl(content, this.options.rootUrl);
+        return content;
       case "path":
+        if (port || this.options.rootUrl) {
+          const content2 = readFile(this.FILES[stage]);
+          if (port)
+            fs.writeFileSync(this.FILES[stage], this.overridePort(content2, port));
+          if (this.options.rootUrl)
+            fs.writeFileSync(this.FILES[stage], this.overrideRootUrl(content2, this.options.rootUrl));
+        }
         return this.FILES[stage];
       default:
-        throw new Error(`Unknown mode: ${this.mode}`);
+        throw new Error(`Unknown mode: ${this.options.mode}`);
     }
   }
   overridePort(content, port) {
     const importmap = JSON.parse(content);
     importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = `http://localhost:${port}/${ORG_NAME}-${PROJECT_NAME}.js`;
+    return JSON.stringify(importmap, null, 4);
+  }
+  overrideRootUrl(content, rootUrl) {
+    const importmap = JSON.parse(content);
+    importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = `${rootUrl}${ORG_NAME}-${PROJECT_NAME}.js`;
     return JSON.stringify(importmap, null, 4);
   }
 }
@@ -136,7 +150,30 @@ var devServer = (env) => ({
     return middlewares;
   }
 });
+var loadEnv = (dotenvConfig, mode) => {
+  switch (mode) {
+    case "dev":
+      dotenvConfig({ path: `.env.dev`, override: true });
+      break;
+    case "prod":
+      dotenvConfig({ path: `.env.prod`, override: true });
+      break;
+    case "shared":
+      dotenvConfig({ path: `.env.dev`, override: true });
+      break;
+    case "local":
+      dotenvConfig({ path: `.env.dev`, override: true });
+      break;
+    case "test":
+      dotenvConfig({ path: `.env.test`, override: true });
+      break;
+    default:
+      dotenvConfig();
+      break;
+  }
+};
 export {
+  loadEnv,
   htmlPlugin,
   devServer,
   copyPlugin,

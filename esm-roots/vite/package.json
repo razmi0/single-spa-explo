@@ -5,8 +5,8 @@
     "type": "module",
     "scripts": {
         "start": "npm run dev",
-        "dev": "vite",
-        "build": "tsc --noEmit && vite build",
+        "dev": "vite --mode dev",
+        "build": "tsc --noEmit && vite build --mode prod",
         "lint": "eslint .",
         "preview": "vite preview"
     },

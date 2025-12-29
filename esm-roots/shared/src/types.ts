@@ -1,4 +1,8 @@
 export type Mode = "content" | "path";
+export type ImportMapOptions = {
+    mode: Mode;
+    rootUrl?: string | undefined;
+};
 
 // --------
 

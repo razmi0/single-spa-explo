@@ -4,7 +4,7 @@
         "lint": "eslint src --ext js,ts,tsx",
         "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
         "start": "npm run serve",
-        "serve": "cross-env NODE_ENV=development webpack serve --env PORT=2999 --env MODE=dev --env STAGE=dev ",
+        "serve": "cross-env NODE_ENV=development webpack serve --env PORT=2999 --env STAGE=dev ",
         "build": "cross-env NODE_ENV=production webpack build --mode production --env PORT=2999 --env STAGE=prod",
         "preview": "npm run build && npx http-server dist -p 2999 --cors -c-1"
     },
@@ -29,6 +29,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "dotenv": "^17.2.3",
         "single-spa": "^5.9.3",
         "single-spa-layout": "^1.6.0"
     },
