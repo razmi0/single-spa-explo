@@ -8,9 +8,9 @@
  *   bun run sync.ts --watch # Watch mode
  */
 
+import { $ } from "bun";
 import { watch } from "fs";
 import { join, relative } from "path";
-import { $ } from "bun";
 
 const SHARED_DIR = import.meta.dir;
 
@@ -111,4 +111,3 @@ async function main(): Promise<void> {
 }
 
 main().catch(console.error);
-
