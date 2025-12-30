@@ -38,8 +38,10 @@ const singleSpaLifeCycle = singleSpaReact({
 //     return el;
 // }
 
+const cssLifecycle = cssLifecycleFactory("Razmio-vite");
+
 export const { bootstrap, mount, unmount } = {
-    bootstrap: [cssLifecycleFactory("Razmio-vite").bootstrap, singleSpaLifeCycle.bootstrap],
-    mount: [cssLifecycleFactory("Razmio-vite").mount, singleSpaLifeCycle.mount],
-    unmount: [cssLifecycleFactory("Razmio-vite").unmount, singleSpaLifeCycle.unmount],
+    bootstrap: [cssLifecycle.bootstrap, singleSpaLifeCycle.bootstrap],
+    mount: [cssLifecycle.mount, singleSpaLifeCycle.mount],
+    unmount: [cssLifecycle.unmount, singleSpaLifeCycle.unmount],
 };

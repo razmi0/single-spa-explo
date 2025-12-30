@@ -6,7 +6,7 @@ const tools = ["vite", "react", "single-spa"];
 
 const Logo = ({ href, src, name }: { href: string; src: string; name: string }) => {
     return (
-        <a href={href} target="_blank">
+        <a href={href} target="_blank" rel="noreferrer">
             <img src={src} className="logo" alt={name + " logo"} />
         </a>
     );

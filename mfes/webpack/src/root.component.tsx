@@ -1,12 +1,12 @@
 import { useState } from "react";
-//@ts-ignore
+import webpackLogo from "../public/webpack.png";
 import reactLogo from "./assets/react.svg";
 
 const tools = ["webpack", "react", "single-spa"];
 
 const Logo = ({ href, src, name }: { href: string; src: string; name: string }) => {
     return (
-        <a href={href} target="_blank">
+        <a href={href} target="_blank" rel="noreferrer">
             <img src={src} className="logo" alt={name + " logo"} />
         </a>
     );
@@ -26,11 +26,7 @@ export default function Root({ name }: { name: string }) {
     return (
         <>
             <div>
-                <Logo
-                    href="https://webpack.js.org/"
-                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseekicon.com%2Ffree-icon-download%2Fwebpack_2.png&f=1&nofb=1&ipt=cc402c94a69bf1bcb3e7cbdc5a8245060fa635d88597e80b1b029a1267af28e1"
-                    name="Webpack"
-                />
+                <Logo href="https://webpack.js.org/" src={webpackLogo} name="Webpack" />
                 <Logo href="https://18.react.dev/" src={reactLogo} name="React" />
                 <Logo
                     href="https://single-spa.js.org/"

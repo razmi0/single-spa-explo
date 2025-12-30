@@ -4,7 +4,7 @@
         "jsx": "react-jsx",
         "declarationDir": "dist"
     },
-    "files": ["src/Razmio-webpack.tsx"],
+    "files": ["src/Razmio-webpack.tsx", "src/declarations.d.ts"],
     "include": ["src/**/*"],
     "exclude": ["src/**/*.test*"]
 }
