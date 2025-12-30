@@ -19,21 +19,22 @@ export default defineConfig(({ command, mode }) => {
     const port = Number(VITE_PORT || DEFAULT_PORT);
     const baseUrl = VITE_BASE_URL || `http://localhost:${port}/`;
     const base = command === "serve" ? "/" : baseUrl;
-    const hmr = () => command === "serve" && vitePluginReactHMR();
-    const singleSpaPlugin = () =>
-        command === "serve" &&
-        vitePluginSingleSpa({
-            type: "mife",
-            serverPort: port,
-            spaEntryPoints: ENTRY_POINTS,
-        });
+    const hmr = command === "serve" && vitePluginReactHMR();
 
     return {
         base,
         resolve: {
             alias: ALIAS,
         },
-        plugins: [react(), hmr(), singleSpaPlugin()].filter(Boolean),
+        plugins: [
+            react(),
+            hmr,
+            vitePluginSingleSpa({
+                type: "mife",
+                serverPort: port,
+                spaEntryPoints: ENTRY_POINTS,
+            }),
+        ],
         build: {
             minify: false,
             rollupOptions: { external: ["react", "react-dom"] },
