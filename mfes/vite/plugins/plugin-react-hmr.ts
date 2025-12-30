@@ -1,4 +1,3 @@
-// @ts-nocheck
 import react from "@vitejs/plugin-react";
 import { type ResolvedConfig } from "vite";
 
