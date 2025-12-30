@@ -3,16 +3,26 @@ import { fileURLToPath } from "url";
 
 // Re-export everything for single entry point
 export { LAYOUT_FILE, ORG_NAME, PROJECT_NAME } from "./constants.js";
-export { default as ImportMapManager } from "./ImportMapManager.js";
-export { default as LayoutManager } from "./LayoutManager.js";
+export { default as ImportMapLoader } from "./ImportMapLoader.js";
+export { default as TemplateLoader } from "./TemplateLoader.js";
 export type {
+    // ImportMap types
     ImportMapFiles,
     ImportMapKey,
-    ImportMapMode,
+    ImportMapLoaderOptions,
     ImportMapPath,
+    // Legacy aliases (deprecated)
     LayoutFiles,
     LayoutKey,
     LayoutPath,
+    // Shared types
+    RetrievalMode,
+    RetrievalOptions,
+    // Template types
+    TemplateFiles,
+    TemplateKey,
+    TemplateLoaderOptions,
+    TemplatePath,
 } from "./types.js";
 
 // Resolve relative to the bundled file location (./shared/index.js)

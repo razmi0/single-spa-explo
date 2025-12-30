@@ -3,7 +3,6 @@
         "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@6.0.3/lib/es2015/esm/single-spa.min.js",
         "react": "https://esm.sh/react@18.3.1",
         "react-dom": "https://esm.sh/react-dom@18.3.1",
-        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-        "@Razmio/root-config": "http://localhost:4678/Razmio-root-config.js"
+        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client"
     }
 }

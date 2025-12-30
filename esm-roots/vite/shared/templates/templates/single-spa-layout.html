@@ -1,0 +1,25 @@
+<!--
+
+    This is the single-spa Layout Definition for your microfrontends.
+    See https://single-spa.js.org/docs/layout-definition/ for more information.
+
+  -->
+
+<main>
+    <div class="app-wrapper">
+        <route path="/">
+            <application name="@Razmio/vite"></application>
+        </route>
+    </div>
+    <div class="app-wrapper">
+        <route path="/">
+            <application name="@Razmio/webpack"></application>
+        </route>
+    </div>
+    <div class="app-wrapper">
+        <route default>
+            <h1>404</h1>
+            <p>Page not found</p>
+        </route>
+    </div>
+</main>

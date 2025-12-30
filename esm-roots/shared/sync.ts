@@ -10,7 +10,6 @@
 
 import { $ } from "bun";
 import { watch } from "fs";
-import { readdir } from "fs/promises";
 import { join, relative } from "path";
 
 const SHARED_DIR = import.meta.dir;
@@ -62,6 +61,17 @@ async function generateDeclarations(): Promise<boolean> {
     }
 
     console.log("📝 Generated TypeScript declarations → dist/*.d.ts");
+
+    // Bundle .d.ts files into a single index.d.ts using rollup
+    const rollupResult = await $`bunx rollup -c rollup.config.js`.quiet();
+
+    if (rollupResult.exitCode !== 0) {
+        console.error("❌ Declaration bundling failed:");
+        console.error(rollupResult.stderr.toString());
+        return false;
+    }
+
+    console.log("📦 Bundled declarations → dist/index.d.ts");
     return true;
 }
 
@@ -74,18 +84,10 @@ async function copyAssets(targetDir: string): Promise<void> {
     const targetIndex = join(targetDir, "index.js");
     await Bun.write(targetIndex, Bun.file(bundledFile));
 
-    // Copy declaration files
-    const distDir = join(SHARED_DIR, "dist");
-    const distFiles = await readdir(distDir);
-    const dtsFiles = distFiles.filter((f) => f.endsWith(".d.ts"));
-
-    for (const dtsFile of dtsFiles) {
-        const srcPath = join(distDir, dtsFile);
-        // Rename main.d.ts to index.d.ts, keep others as-is
-        const destName = dtsFile === "main.d.ts" ? "index.d.ts" : dtsFile;
-        const destPath = join(targetDir, destName);
-        await Bun.write(destPath, Bun.file(srcPath));
-    }
+    // Copy bundled declaration file (index.d.ts from rollup)
+    const bundledDts = join(SHARED_DIR, "dist/index.d.ts");
+    const targetDts = join(targetDir, "index.d.ts");
+    await Bun.write(targetDts, Bun.file(bundledDts));
 
     // Copy asset directories
     for (const dir of ASSET_DIRS) {

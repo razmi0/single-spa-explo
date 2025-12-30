@@ -6,69 +6,57 @@ import { fileURLToPath as fileURLToPath3 } from "url";
 var ORG_NAME = "Razmio";
 var PROJECT_NAME = "root-config";
 var LAYOUT_FILE = "single-spa-layout.html";
-// src/ImportMapManager.ts
+// src/ImportMapLoader.ts
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 var sharedDir = path.dirname(fileURLToPath(import.meta.url));
 var readFile = (filePath) => {
   try {
-    const content = fs.readFileSync(filePath, "utf-8");
-    return content;
+    return fs.readFileSync(filePath, "utf-8");
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     throw new Error(`File ${filePath} not found: ${reason}`);
   }
 };
 
-class ImportMapManager {
+class ImportMapLoader {
   FILES = {
     dev: path.join(sharedDir, "importmaps/importmap.dev.json"),
     local: path.join(sharedDir, "importmaps/importmap.local.json"),
     shared: path.join(sharedDir, "importmaps/importmap.shared.json"),
     prod: path.join(sharedDir, "importmaps/importmap.json")
   };
-  options = { stage: "prod" };
-  constructor() {}
-  shared(mode) {
-    switch (mode) {
-      case "content":
-        return readFile(this.FILES.shared);
-      case "path":
-        return this.FILES.shared;
-      default:
-        throw new Error(`Unknown mode: ${mode}`);
+  options;
+  constructor(options = { retrievalMode: "content", stage: "prod" }) {
+    this.options = { stage: "prod", ...options };
+  }
+  get(key) {
+    if (!Object.keys(this.FILES).includes(key)) {
+      throw new Error(`Invalid key: ${key}. Expect ${Object.keys(this.FILES).join(" | ")}`);
     }
-  }
-  withRootUrl(rootUrl) {
-    this.options.rootUrl = rootUrl;
-    return this;
-  }
-  withStage(stage) {
-    this.options.stage = stage;
-    return this;
-  }
-  mfe(mode) {
-    if (!Object.keys(this.FILES).includes(this.options.stage)) {
-      throw new Error(`Invalid stage: ${this.options.stage}. Expect ${Object.keys(this.FILES).join("| ")}
-`);
-    }
-    switch (mode) {
+    switch (this.options.retrievalMode) {
       case "content":
-        const content = readFile(this.FILES[this.options.stage]);
-        if (this.options.rootUrl)
+        const content = readFile(this.FILES[key]);
+        if (this.options.rootUrl) {
           return this.overrideRootUrl(content, this.options.rootUrl);
+        }
         return content;
       case "path":
         if (this.options.rootUrl) {
-          const content2 = readFile(this.FILES[this.options.stage]);
-          if (this.options.rootUrl)
-            fs.writeFileSync(this.FILES[this.options.stage], this.overrideRootUrl(content2, this.options.rootUrl));
+          const content2 = readFile(this.FILES[key]);
+          fs.writeFileSync(this.FILES[key], this.overrideRootUrl(content2, this.options.rootUrl));
         }
-        return this.FILES[this.options.stage];
+        return this.FILES[key];
       default:
-        throw new Error(`Unknown mode: ${mode}`);
+        throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
     }
+  }
+  shared() {
+    return this.get("shared");
+  }
+  mfe() {
+    return this.get(this.options.stage);
   }
   overrideRootUrl(content, rootUrl) {
     const importmap = JSON.parse(content);
@@ -76,38 +64,37 @@ class ImportMapManager {
     return JSON.stringify(importmap, null, 4);
   }
 }
-// src/LayoutManager.ts
+// src/TemplateLoader.ts
 import fs2 from "fs";
 import path2 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
 var sharedDir2 = path2.dirname(fileURLToPath2(import.meta.url));
 var readFile2 = (filePath) => {
   try {
-    const content = fs2.readFileSync(filePath, "utf-8");
-    return content;
+    return fs2.readFileSync(filePath, "utf-8");
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     throw new Error(`File ${filePath} not found: ${reason}`);
   }
 };
 
-class LayoutManager {
-  mode;
+class TemplateLoader {
   FILES = {
     apps: path2.join(sharedDir2, "templates/single-spa-layout.html"),
     root: path2.join(sharedDir2, "templates/main.ejs")
   };
-  constructor(mode = "content") {
-    this.mode = mode;
+  options;
+  constructor(options = { retrievalMode: "content" }) {
+    this.options = options;
   }
   get(key) {
-    switch (this.mode) {
+    switch (this.options.retrievalMode) {
       case "content":
         return readFile2(this.FILES[key]);
       case "path":
         return this.FILES[key];
       default:
-        throw new Error(`Unknown mode: ${this.mode}`);
+        throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
     }
   }
 }
@@ -174,9 +161,9 @@ export {
   htmlPlugin,
   devServer,
   copyPlugin,
+  TemplateLoader,
   PROJECT_NAME,
   ORG_NAME,
-  LayoutManager,
   LAYOUT_FILE,
-  ImportMapManager
+  ImportMapLoader
 };

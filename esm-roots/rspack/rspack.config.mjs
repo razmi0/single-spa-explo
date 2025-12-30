@@ -11,8 +11,8 @@ import {
     htmlPlugin,
     devServer,
     loadEnv,
-    ImportMapManager,
-    LayoutManager,
+    ImportMapLoader,
+    TemplateLoader,
 } from "./shared/index.js";
 const { CopyRspackPlugin, HtmlRspackPlugin } = rspack;
 
@@ -38,10 +38,11 @@ export default (env, argv) => {
 
     const { ROOT_PORT = DEFAULT_PORT, ROOT_URL } = process.env;
 
-    const importMapManager = new ImportMapManager().withStage(stage).withRootUrl(ROOT_URL);
-    const layoutManager = new LayoutManager("content");
-    const shared = importMapManager.shared("content");
-    const mfes = importMapManager.mfe("content");
+    const importMapLoader = new ImportMapLoader({ retrievalMode: "content", stage, rootUrl: ROOT_URL });
+    const templateLoader = new TemplateLoader({ retrievalMode: "content" });
+    const shared = importMapLoader.get("shared");
+    const mfes = importMapLoader.get(stage);
+    const apps = templateLoader.get("apps");
 
     const defaultConfig = singleSpaDefaults({
         orgName: ORG_NAME,
@@ -60,7 +61,7 @@ export default (env, argv) => {
                 sharedImportmap: shared,
                 mfeImportmap: mfes,
                 mode: stage,
-                layout: layoutManager.get("apps"),
+                layout: apps,
             }),
         ],
 

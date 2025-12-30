@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import type { LayoutFiles, LayoutKey, Mode } from "./types";
+import type { TemplateFiles, TemplateKey, TemplateLoaderOptions } from "./types";
 
 // Resolve relative to the bundled file location (./shared/index.js)
 // When bundled, import.meta.url points to the output location
@@ -9,30 +9,39 @@ const sharedDir = path.dirname(fileURLToPath(import.meta.url));
 
 const readFile = (filePath: string): string => {
     try {
-        const content = fs.readFileSync(filePath, "utf-8");
-        return content;
+        return fs.readFileSync(filePath, "utf-8");
     } catch (error: unknown) {
         const reason = error instanceof Error ? error.message : String(error);
         throw new Error(`File ${filePath} not found: ${reason}`);
     }
 };
 
-export default class LayoutManager {
-    private FILES = {
+export default class TemplateLoader {
+    private FILES: TemplateFiles = {
         apps: path.join(sharedDir, "templates/single-spa-layout.html"),
         root: path.join(sharedDir, "templates/main.ejs"),
-    } as LayoutFiles;
+    } as TemplateFiles;
 
-    constructor(private mode: Mode = "content") {}
+    private options: TemplateLoaderOptions;
 
-    get(key: LayoutKey) {
-        switch (this.mode) {
+    constructor(options: TemplateLoaderOptions = { retrievalMode: "content" }) {
+        this.options = options;
+    }
+
+    /**
+     * Get a template by key
+     * @param key - "apps" for single-spa-layout.html or "root" for main.ejs
+     * @returns Template content (string) or file path based on retrievalMode
+     */
+    get(key: TemplateKey): string {
+        switch (this.options.retrievalMode) {
             case "content":
                 return readFile(this.FILES[key]);
             case "path":
                 return this.FILES[key];
             default:
-                throw new Error(`Unknown mode: ${this.mode}`);
+                throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
         }
     }
 }
+
