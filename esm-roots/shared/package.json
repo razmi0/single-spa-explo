@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
+        "start": "bun run sync.ts --watch",
         "build": "bun run sync.ts",
         "dev": "bun run sync.ts --watch"
     },

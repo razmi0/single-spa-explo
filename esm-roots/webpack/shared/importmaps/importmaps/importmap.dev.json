@@ -1,7 +1,0 @@
-{
-    "imports": {
-        "@Razmio/root-config": "http://localhost:3000/Razmio-root-config.js",
-        "@Razmio/webpack": "http://localhost:3001/Razmio-webpack.js",
-        "@Razmio/vite": "http://localhost:3003/Razmio-vite.js"
-    }
-}

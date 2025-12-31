@@ -19,51 +19,40 @@ var readFile = (filePath) => {
     throw new Error(`File ${filePath} not found: ${reason}`);
   }
 };
-
-class ImportMapLoader {
-  FILES = {
-    dev: path.join(sharedDir, "importmaps/importmap.dev.json"),
-    local: path.join(sharedDir, "importmaps/importmap.local.json"),
-    shared: path.join(sharedDir, "importmaps/importmap.shared.json"),
-    prod: path.join(sharedDir, "importmaps/importmap.json")
-  };
-  options;
-  constructor(options = { retrievalMode: "content", stage: "prod" }) {
-    this.options = { stage: "prod", ...options };
+var FILES = {
+  dev: path.join(sharedDir, "importmaps/importmap.dev.json"),
+  local: path.join(sharedDir, "importmaps/importmap.local.json"),
+  shared: path.join(sharedDir, "importmaps/importmap.shared.json"),
+  prod: path.join(sharedDir, "importmaps/importmap.json")
+};
+var getImportMap = (type = "prod", options) => {
+  const { retrievalMode = "content", rootUrl } = options ?? {};
+  if (!Object.keys(FILES).includes(type)) {
+    throw new Error(`Invalid key: ${type}. Expect ${Object.keys(FILES).join(" | ")}`);
   }
-  get(key) {
-    if (!Object.keys(this.FILES).includes(key)) {
-      throw new Error(`Invalid key: ${key}. Expect ${Object.keys(this.FILES).join(" | ")}`);
-    }
-    switch (this.options.retrievalMode) {
-      case "content":
-        const content = readFile(this.FILES[key]);
-        if (this.options.rootUrl) {
-          return this.overrideRootUrl(content, this.options.rootUrl);
-        }
-        return content;
-      case "path":
-        if (this.options.rootUrl) {
-          const content2 = readFile(this.FILES[key]);
-          fs.writeFileSync(this.FILES[key], this.overrideRootUrl(content2, this.options.rootUrl));
-        }
-        return this.FILES[key];
-      default:
-        throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
-    }
+  switch (retrievalMode) {
+    case "content":
+      const content = readFile(FILES[type]);
+      if (rootUrl) {
+        return overrideRootUrl(content, rootUrl);
+      }
+      return content;
+    case "path":
+      if (rootUrl) {
+        const content2 = readFile(FILES[type]);
+        fs.writeFileSync(FILES[type], overrideRootUrl(content2, rootUrl));
+      }
+      return FILES[type];
+    default:
+      throw new Error(`Unknown retrievalMode: ${retrievalMode}`);
   }
-  shared() {
-    return this.get("shared");
-  }
-  mfe() {
-    return this.get(this.options.stage);
-  }
-  overrideRootUrl(content, rootUrl) {
-    const importmap = JSON.parse(content);
-    importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = new URL(`${ORG_NAME}-${PROJECT_NAME}.js`, rootUrl).href;
-    return JSON.stringify(importmap, null, 4);
-  }
-}
+};
+var overrideRootUrl = (content, rootUrl) => {
+  const importmap = JSON.parse(content);
+  importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = new URL(`${ORG_NAME}-${PROJECT_NAME}.js`, rootUrl).href;
+  return JSON.stringify(importmap, null, 4);
+};
+var ImportMapLoader_default = getImportMap;
 // src/TemplateLoader.ts
 import fs2 from "fs";
 import path2 from "path";
@@ -77,27 +66,24 @@ var readFile2 = (filePath) => {
     throw new Error(`File ${filePath} not found: ${reason}`);
   }
 };
-
-class TemplateLoader {
-  FILES = {
-    apps: path2.join(sharedDir2, "templates/single-spa-layout.html"),
-    root: path2.join(sharedDir2, "templates/main.ejs")
-  };
-  options;
-  constructor(options = { retrievalMode: "content" }) {
-    this.options = options;
+var FILES2 = {
+  apps: path2.join(sharedDir2, "templates/single-spa-layout.html"),
+  root: path2.join(sharedDir2, "templates/main.ejs")
+};
+var getTemplate = (key, { retrievalMode = "content" } = {}) => {
+  if (!Object.keys(FILES2).includes(key)) {
+    throw new Error(`Invalid key: ${key}. Expect ${Object.keys(FILES2).join(" | ")}`);
   }
-  get(key) {
-    switch (this.options.retrievalMode) {
-      case "content":
-        return readFile2(this.FILES[key]);
-      case "path":
-        return this.FILES[key];
-      default:
-        throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
-    }
+  switch (retrievalMode) {
+    case "content":
+      return readFile2(FILES2[key]);
+    case "path":
+      return FILES2[key];
+    default:
+      throw new Error(`Unknown retrievalMode: ${retrievalMode}`);
   }
-}
+};
+var TemplateLoader_default = getTemplate;
 // src/main.ts
 var sharedDir3 = path3.dirname(fileURLToPath3(import.meta.url));
 var copyPlugin = (instance) => {
@@ -159,11 +145,11 @@ var loadEnv = (dotenvConfig, mode) => {
 export {
   loadEnv,
   htmlPlugin,
+  TemplateLoader_default as getTemplate,
+  ImportMapLoader_default as getImportMap,
   devServer,
   copyPlugin,
-  TemplateLoader,
   PROJECT_NAME,
   ORG_NAME,
-  LAYOUT_FILE,
-  ImportMapLoader
+  LAYOUT_FILE
 };

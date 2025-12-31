@@ -1,7 +1,7 @@
 // Shared retrieval options for loaders
 export type RetrievalMode = "content" | "path";
 export type RetrievalOptions = {
-    retrievalMode: RetrievalMode;
+    retrievalMode?: RetrievalMode;
 };
 
 // --------
@@ -13,7 +13,6 @@ export type ImportMapFiles = Record<ImportMapKey, ImportMapPath>;
 
 export type ImportMapLoaderOptions = RetrievalOptions & {
     rootUrl?: string;
-    stage?: ImportMapKey;
 };
 
 // --------

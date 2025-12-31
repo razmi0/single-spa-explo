@@ -11,26 +11,22 @@ import {
     htmlPlugin,
     devServer,
     loadEnv,
-    ImportMapLoader,
-    TemplateLoader,
+    getImportMap,
+    getTemplate,
 } from "./shared/index.js";
 
 const DEFAULT_PORT = 2999;
+const DEFAULT_URL = `http://localhost:${DEFAULT_PORT}`;
 
-/**
- * @param {import("webpack").Configuration & { PORT: string , STAGE: "dev" | "prod" | "shared" | "" | undefined }} env
- */
 export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
 
-    const { ROOT_PORT = DEFAULT_PORT, ROOT_URL } = process.env;
+    const { ROOT_PORT = DEFAULT_PORT, ROOT_URL = DEFAULT_URL } = process.env;
 
-    const importMapLoader = new ImportMapLoader({ retrievalMode: "content", stage, rootUrl: ROOT_URL });
-    const templateLoader = new TemplateLoader({ retrievalMode: "content" });
-    const shared = importMapLoader.get("shared");
-    const mfes = importMapLoader.get(stage);
-    const apps = templateLoader.get("apps");
+    const shared = getImportMap("shared");
+    const mfes = getImportMap(stage, { rootUrl: ROOT_URL });
+    const apps = getTemplate("apps");
 
     const defaultConfig = singleSpaDefaults({
         orgName: ORG_NAME,

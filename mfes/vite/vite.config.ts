@@ -11,13 +11,14 @@ const ALIAS = {
 };
 const ENTRY_POINTS = [`src/${ENTRY_FILE}.tsx`];
 const DEFAULT_PORT = 3003;
+const DEFAULT_URL = `http://localhost:${DEFAULT_PORT}`;
 
 const envLoader = (mode: string) => loadEnv(mode, process.cwd(), "VITE_");
 
 export default defineConfig(({ command, mode }) => {
-    const { VITE_BASE_URL, VITE_PORT } = envLoader(mode);
+    const { VITE_BASE_URL = DEFAULT_URL, VITE_PORT = DEFAULT_PORT } = envLoader(mode);
     const port = Number(VITE_PORT || DEFAULT_PORT);
-    const baseUrl = VITE_BASE_URL || `http://localhost:${port}/`;
+    const baseUrl = VITE_BASE_URL;
     const base = command === "serve" ? "/" : baseUrl;
     const hmr = command === "serve" && vitePluginReactHMR();
 

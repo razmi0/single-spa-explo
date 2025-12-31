@@ -3,8 +3,8 @@ import { fileURLToPath } from "url";
 
 // Re-export everything for single entry point
 export { LAYOUT_FILE, ORG_NAME, PROJECT_NAME } from "./constants.js";
-export { default as ImportMapLoader } from "./ImportMapLoader.js";
-export { default as TemplateLoader } from "./TemplateLoader.js";
+export { default as getImportMap } from "./ImportMapLoader.js";
+export { default as getTemplate } from "./TemplateLoader.js";
 export type {
     // ImportMap types
     ImportMapFiles,

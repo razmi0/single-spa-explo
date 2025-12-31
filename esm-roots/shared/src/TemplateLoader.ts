@@ -16,32 +16,30 @@ const readFile = (filePath: string): string => {
     }
 };
 
-export default class TemplateLoader {
-    private FILES: TemplateFiles = {
-        apps: path.join(sharedDir, "templates/single-spa-layout.html"),
-        root: path.join(sharedDir, "templates/main.ejs"),
-    } as TemplateFiles;
+const FILES: TemplateFiles = {
+    apps: path.join(sharedDir, "templates/single-spa-layout.html"),
+    root: path.join(sharedDir, "templates/main.ejs"),
+} as TemplateFiles;
 
-    private options: TemplateLoaderOptions;
-
-    constructor(options: TemplateLoaderOptions = { retrievalMode: "content" }) {
-        this.options = options;
+/**
+ * Get a template by key
+ * @param key - "apps" for single-spa-layout.html or "root" for main.ejs
+ * @param options - retrieval options (content or path mode)
+ * @returns Template content (string) or file path based on retrievalMode
+ */
+const getTemplate = (key: TemplateKey, { retrievalMode = "content" }: TemplateLoaderOptions = {}): string => {
+    if (!Object.keys(FILES).includes(key)) {
+        throw new Error(`Invalid key: ${key}. Expect ${Object.keys(FILES).join(" | ")}`);
     }
 
-    /**
-     * Get a template by key
-     * @param key - "apps" for single-spa-layout.html or "root" for main.ejs
-     * @returns Template content (string) or file path based on retrievalMode
-     */
-    get(key: TemplateKey): string {
-        switch (this.options.retrievalMode) {
-            case "content":
-                return readFile(this.FILES[key]);
-            case "path":
-                return this.FILES[key];
-            default:
-                throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
-        }
+    switch (retrievalMode) {
+        case "content":
+            return readFile(FILES[key]);
+        case "path":
+            return FILES[key];
+        default:
+            throw new Error(`Unknown retrievalMode: ${retrievalMode}`);
     }
-}
+};
 
+export default getTemplate;

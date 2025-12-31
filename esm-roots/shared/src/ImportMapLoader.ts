@@ -2,11 +2,11 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { ORG_NAME, PROJECT_NAME } from "./constants.js";
-import type { ImportMapFiles, ImportMapKey, ImportMapLoaderOptions } from "./types";
+import type { ImportMapFiles, ImportMapKey, ImportMapLoaderOptions } from "./types.js";
 
 // about importmap retrieval mode that differ from bundlers:
 // "content" mode is used by webpack/rspack essentially
-// "path" mode is used by vite
+// "path" mode is used by vite because of the plugin we used that read them
 
 // Resolve relative to the bundled file location (./shared/index.js)
 // When bundled, import.meta.url points to the output location
@@ -21,67 +21,41 @@ const readFile = (filePath: string): string => {
     }
 };
 
-export default class ImportMapLoader {
-    private FILES: ImportMapFiles = {
-        dev: path.join(sharedDir, "importmaps/importmap.dev.json"),
-        local: path.join(sharedDir, "importmaps/importmap.local.json"),
-        shared: path.join(sharedDir, "importmaps/importmap.shared.json"),
-        prod: path.join(sharedDir, "importmaps/importmap.json"),
-    } as ImportMapFiles;
+const FILES: ImportMapFiles = {
+    dev: path.join(sharedDir, "importmaps/importmap.dev.json"),
+    local: path.join(sharedDir, "importmaps/importmap.local.json"),
+    shared: path.join(sharedDir, "importmaps/importmap.shared.json"),
+    prod: path.join(sharedDir, "importmaps/importmap.json"),
+} as ImportMapFiles;
 
-    private options: ImportMapLoaderOptions;
-
-    constructor(options: ImportMapLoaderOptions = { retrievalMode: "content", stage: "prod" }) {
-        this.options = { stage: "prod", ...options };
+const getImportMap = (type: ImportMapKey = "prod", options?: ImportMapLoaderOptions): string => {
+    const { retrievalMode = "content", rootUrl } = options ?? {};
+    if (!Object.keys(FILES).includes(type)) {
+        throw new Error(`Invalid key: ${type}. Expect ${Object.keys(FILES).join(" | ")}`);
     }
 
-    /**
-     * Get an importmap by key
-     * @param key - "dev" | "local" | "prod" | "shared"
-     * @returns ImportMap content (string) or file path based on retrievalMode
-     */
-    get(key: ImportMapKey): string {
-        if (!Object.keys(this.FILES).includes(key)) {
-            throw new Error(`Invalid key: ${key}. Expect ${Object.keys(this.FILES).join(" | ")}`);
-        }
-
-        switch (this.options.retrievalMode) {
-            case "content":
-                const content = readFile(this.FILES[key]);
-                if (this.options.rootUrl) {
-                    return this.overrideRootUrl(content, this.options.rootUrl);
-                }
-                return content;
-            case "path":
-                if (this.options.rootUrl) {
-                    const content = readFile(this.FILES[key]);
-                    fs.writeFileSync(this.FILES[key], this.overrideRootUrl(content, this.options.rootUrl));
-                }
-                return this.FILES[key];
-            default:
-                throw new Error(`Unknown retrievalMode: ${this.options.retrievalMode}`);
-        }
+    switch (retrievalMode) {
+        case "content":
+            const content = readFile(FILES[type]);
+            if (rootUrl) {
+                return overrideRootUrl(content, rootUrl);
+            }
+            return content;
+        case "path":
+            if (rootUrl) {
+                const content = readFile(FILES[type]);
+                fs.writeFileSync(FILES[type], overrideRootUrl(content, rootUrl));
+            }
+            return FILES[type];
+        default:
+            throw new Error(`Unknown retrievalMode: ${retrievalMode}`);
     }
+};
 
-    /**
-     * Get the shared importmap (convenience method)
-     * @returns Shared importmap content or path
-     */
-    shared(): string {
-        return this.get("shared");
-    }
+const overrideRootUrl = (content: string, rootUrl: string): string => {
+    const importmap = JSON.parse(content);
+    importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = new URL(`${ORG_NAME}-${PROJECT_NAME}.js`, rootUrl).href;
+    return JSON.stringify(importmap, null, 4);
+};
 
-    /**
-     * Get the MFE importmap based on configured stage (convenience method)
-     * @returns MFE importmap content or path for the configured stage
-     */
-    mfe(): string {
-        return this.get(this.options.stage!);
-    }
-
-    private overrideRootUrl(content: string, rootUrl: string): string {
-        const importmap = JSON.parse(content);
-        importmap.imports[`@${ORG_NAME}/${PROJECT_NAME}`] = new URL(`${ORG_NAME}-${PROJECT_NAME}.js`, rootUrl).href;
-        return JSON.stringify(importmap, null, 4);
-    }
-}
+export default getImportMap;
