@@ -41,9 +41,6 @@ export default function Root(props: MfeDefaultProps) {
                         </span>
                     )}
                 </div>
-                <div className="navbar-center">
-                    <h3>{document.title.split(" - ")[0]}</h3>
-                </div>
                 <div className="navbar-right">
                     <NavLinks links={links} />
                     {mfeRegistry && (

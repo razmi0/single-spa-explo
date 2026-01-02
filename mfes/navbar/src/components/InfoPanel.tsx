@@ -23,8 +23,7 @@ export function InfoPanel({ info }: InfoPanelProps) {
         <div
             className="info-panel-container"
             onMouseEnter={() => setIsVisible(true)}
-            onMouseLeave={() => setIsVisible(false)}
-        >
+            onMouseLeave={() => setIsVisible(false)}>
             <button className="info-trigger" aria-label="View MFE information">
                 <img src={infoIcon} alt="Info" className="info-icon" />
             </button>
@@ -57,4 +56,3 @@ export function InfoPanel({ info }: InfoPanelProps) {
         </div>
     );
 }
-
