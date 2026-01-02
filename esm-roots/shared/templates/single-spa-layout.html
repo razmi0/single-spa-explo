@@ -3,8 +3,17 @@
     This is the single-spa Layout Definition for your microfrontends.
     See https://single-spa.js.org/docs/layout-definition/ for more information.
 
+    Props are injected dynamically via customProps in each root-config.
+    Static props can be added here using the props attribute on <application>.
+    Example: <application name="@Razmio/navbar" props="navConfig"></application>
+
   -->
 
+<nav class="navbar-wrapper">
+    <route path="/">
+        <application name="@Razmio/navbar"></application>
+    </route>
+</nav>
 <main>
     <div class="app-wrapper">
         <route path="/">

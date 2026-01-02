@@ -7,14 +7,10 @@
         <title><%= tech %> - <%= orgName %> - <%= projectName %></title>
     </head>
     <body>
-        <span
-            ><h1><%= tech %></h1>
-            <small><%= mode %></small></span
-        >
-
         <noscript> You need to enable JavaScript to run this app. </noscript>
+        <div id="apps"></div>
         <template id="single-spa-layout">
-            <single-spa-router> <%- layout %> </single-spa-router>
+            <single-spa-router containerEl="#apps"> <%- layout %> </single-spa-router>
         </template>
         <script type="module" src="/src/root-config.ts"></script>
     </body>

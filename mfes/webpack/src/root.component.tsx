@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import webpackLogo from "../public/webpack.png";
 import reactLogo from "./assets/react.svg";
+import type { MfeDefaultProps } from "./types/mfe-props";
 
 const tools = ["webpack", "react", "single-spa"];
 
@@ -20,9 +21,25 @@ const Footer = ({ count, onClick }: { count: number; onClick: () => void }) => {
     );
 };
 
-export default function Root({ name }: { name: string }) {
+export default function Root(props: MfeDefaultProps) {
+    const { name, rootConfig, getLoadedApps, mfeRegistry } = props;
     const [count, setCount] = useState(0);
-    const inc = () => setCount((count) => count + 1);
+
+    const inc = () => {
+        setCount((count) => count + 1);
+    };
+
+    // Log props and listen to events in development
+    useEffect(() => {
+        if (rootConfig?.mode === "development") {
+            console.log(`[${name}] Props received:`, {
+                rootConfig,
+                loadedApps: getLoadedApps?.(),
+                mfeRegistry,
+            });
+        }
+    }, [name, rootConfig, getLoadedApps, mfeRegistry]);
+
     return (
         <>
             <div>
@@ -38,6 +55,11 @@ export default function Root({ name }: { name: string }) {
             <p style={{ margin: 0, padding: 0, textDecoration: "underline" }}>
                 {tools.map((tool) => tool.charAt(0).toUpperCase() + tool.slice(1)).join(" + ")}
             </p>
+            {rootConfig && (
+                <p style={{ margin: "4px 0", fontSize: "0.75rem", opacity: 0.7 }}>
+                    Root: {rootConfig.tech} ({rootConfig.mode})
+                </p>
+            )}
             <Footer count={count} onClick={inc} />
         </>
     );

@@ -4,6 +4,7 @@ import { merge } from "webpack-merge";
 import singleSpaDefaults from "webpack-config-single-spa-ts";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import webpack from "webpack";
 import {
     ORG_NAME,
     PROJECT_NAME,
@@ -13,17 +14,15 @@ import {
     loadEnv,
     getImportMap,
     getTemplate,
+    DEFAULT_PORTS,
+    DEFAULT_ROOTS,
 } from "./shared/index.js";
-
-const DEFAULT_PORT = 2999;
-const DEFAULT_URL = `http://localhost:${DEFAULT_PORT}`;
 
 export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
 
-    const { ROOT_PORT = DEFAULT_PORT, ROOT_URL = DEFAULT_URL } = process.env;
-
+    const { ROOT_PORT = DEFAULT_PORTS.webpack, ROOT_URL } = process.env;
     const shared = getImportMap("shared");
     const mfes = getImportMap(stage, { rootUrl: ROOT_URL });
     const apps = getTemplate("apps");
@@ -46,6 +45,10 @@ export default (env, argv) => {
                 mfeImportmap: mfes,
                 mode: stage,
                 layout: apps,
+            }),
+            // Inject constants at build time for browser access
+            new webpack.DefinePlugin({
+                __DEFAULT_ROOTS__: JSON.stringify(DEFAULT_ROOTS),
             }),
         ],
     });

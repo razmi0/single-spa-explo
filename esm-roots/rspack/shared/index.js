@@ -6,6 +6,35 @@ import { fileURLToPath as fileURLToPath3 } from "url";
 var ORG_NAME = "Razmio";
 var PROJECT_NAME = "root-config";
 var LAYOUT_FILE = "single-spa-layout.html";
+var DEFAULT_PORTS = {
+  webpack: 2999,
+  rspack: 3000,
+  vite: 2998
+};
+var DEFAULT_URLS_PROD = {
+  webpack: "https://single-spa-exploroot-webpack.vercel.app/",
+  rspack: "https://razmi0-single-spa-explo.vercel.app/",
+  vite: "https://single-spa-exploroot-vite.vercel.app/"
+};
+var DEFAULT_URLS_DEV = {
+  webpack: `http://localhost:${DEFAULT_PORTS.webpack}`,
+  rspack: `http://localhost:${DEFAULT_PORTS.rspack}`,
+  vite: `http://localhost:${DEFAULT_PORTS.vite}`
+};
+var DEFAULT_ROOTS = {
+  webpack: {
+    dev: DEFAULT_URLS_DEV.webpack,
+    prod: DEFAULT_URLS_PROD.webpack
+  },
+  rspack: {
+    dev: DEFAULT_URLS_DEV.rspack,
+    prod: DEFAULT_URLS_PROD.rspack
+  },
+  vite: {
+    dev: DEFAULT_URLS_DEV.vite,
+    prod: DEFAULT_URLS_PROD.vite
+  }
+};
 // src/ImportMapLoader.ts
 import fs from "fs";
 import path from "path";
@@ -27,9 +56,7 @@ var FILES = {
 };
 var getImportMap = (type = "prod", options) => {
   const { retrievalMode = "content", rootUrl } = options ?? {};
-  if (!Object.keys(FILES).includes(type)) {
-    throw new Error(`Invalid key: ${type}. Expect ${Object.keys(FILES).join(" | ")}`);
-  }
+  throwIfInvalid(type);
   switch (retrievalMode) {
     case "content":
       const content = readFile(FILES[type]);
@@ -45,6 +72,11 @@ var getImportMap = (type = "prod", options) => {
       return FILES[type];
     default:
       throw new Error(`Unknown retrievalMode: ${retrievalMode}`);
+  }
+};
+var throwIfInvalid = (type) => {
+  if (!Object.keys(FILES).includes(type)) {
+    throw new Error(`Invalid key: ${type}. Expect ${Object.keys(FILES).join(" | ")}`);
   }
 };
 var overrideRootUrl = (content, rootUrl) => {
@@ -151,5 +183,9 @@ export {
   copyPlugin,
   PROJECT_NAME,
   ORG_NAME,
-  LAYOUT_FILE
+  LAYOUT_FILE,
+  DEFAULT_URLS_PROD,
+  DEFAULT_URLS_DEV,
+  DEFAULT_ROOTS,
+  DEFAULT_PORTS
 };

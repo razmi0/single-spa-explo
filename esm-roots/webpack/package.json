@@ -1,5 +1,6 @@
 {
     "name": "@Razmio/root-config",
+    "type": "module",
     "scripts": {
         "lint": "eslint src --ext js,ts,tsx",
         "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
@@ -29,6 +30,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "@babel/runtime": "^7.23.3",
         "dotenv": "^17.2.3",
         "single-spa": "^5.9.3",
         "single-spa-layout": "^1.6.0"

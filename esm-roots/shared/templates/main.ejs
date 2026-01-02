@@ -24,14 +24,15 @@
     </head>
     <body>
         <noscript> You need to enable JavaScript to run this app. </noscript>
-        <h1><%= tech %></h1>
-        <small><%= mode %></small>
+        <div id="apps"></div>
         <template id="single-spa-layout">
-            <single-spa-router> <%= layout %> </single-spa-router>
+            <single-spa-router containerEl="#apps"> <%= layout %> </single-spa-router>
         </template>
+        <!-- containerEl (optional): A string CSS Selector or HTMLElement that is used as the container for all single-spa dom elements. Defaults to body. -->
         <script>
             window.importMapInjector.initPromise.then(() => {
                 import("@Razmio/root-config");
+                import("@Razmio/navbar");
                 import("@Razmio/webpack");
                 import("@Razmio/vite");
             });

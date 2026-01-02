@@ -2,7 +2,15 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // Re-export everything for single entry point
-export { LAYOUT_FILE, ORG_NAME, PROJECT_NAME } from "./constants.js";
+export {
+    DEFAULT_PORTS,
+    DEFAULT_ROOTS,
+    DEFAULT_URLS_DEV,
+    DEFAULT_URLS_PROD,
+    LAYOUT_FILE,
+    ORG_NAME,
+    PROJECT_NAME,
+} from "./constants.js";
 export { default as getImportMap } from "./ImportMapLoader.js";
 export { default as getTemplate } from "./TemplateLoader.js";
 export type {
@@ -15,9 +23,16 @@ export type {
     LayoutFiles,
     LayoutKey,
     LayoutPath,
+    // MFE Props types
+    DefaultRoots,
+    LoadedApp,
+    MfeDefaultProps,
+    MfeRegistry,
+    RootUrls,
     // Shared types
     RetrievalMode,
     RetrievalOptions,
+    RootConfigInfo,
     // Template types
     TemplateFiles,
     TemplateKey,

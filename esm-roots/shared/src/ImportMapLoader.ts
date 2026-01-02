@@ -30,9 +30,7 @@ const FILES: ImportMapFiles = {
 
 const getImportMap = (type: ImportMapKey = "prod", options?: ImportMapLoaderOptions): string => {
     const { retrievalMode = "content", rootUrl } = options ?? {};
-    if (!Object.keys(FILES).includes(type)) {
-        throw new Error(`Invalid key: ${type}. Expect ${Object.keys(FILES).join(" | ")}`);
-    }
+    throwIfInvalid(type);
 
     switch (retrievalMode) {
         case "content":
@@ -49,6 +47,12 @@ const getImportMap = (type: ImportMapKey = "prod", options?: ImportMapLoaderOpti
             return FILES[type];
         default:
             throw new Error(`Unknown retrievalMode: ${retrievalMode}`);
+    }
+};
+
+const throwIfInvalid = (type: ImportMapKey) => {
+    if (!Object.keys(FILES).includes(type)) {
+        throw new Error(`Invalid key: ${type}. Expect ${Object.keys(FILES).join(" | ")}`);
     }
 };
 

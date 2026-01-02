@@ -13,10 +13,10 @@ import {
     loadEnv,
     getImportMap,
     getTemplate,
+    DEFAULT_PORTS,
+    DEFAULT_ROOTS,
 } from "./shared/index.js";
-const { CopyRspackPlugin, HtmlRspackPlugin } = rspack;
-
-const DEFAULT_PORT = 3000;
+const { CopyRspackPlugin, HtmlRspackPlugin, DefinePlugin } = rspack;
 
 const merge = mergeWithRules({
     module: {
@@ -36,7 +36,7 @@ export default (env, argv) => {
     const stage = env.STAGE || "prod";
     loadEnv(config, stage);
 
-    const { ROOT_PORT = DEFAULT_PORT, ROOT_URL } = process.env;
+    const { ROOT_PORT = DEFAULT_PORTS.rspack, ROOT_URL } = process.env;
 
     const shared = getImportMap("shared");
     const mfes = getImportMap(stage, { rootUrl: ROOT_URL });
@@ -60,6 +60,10 @@ export default (env, argv) => {
                 mfeImportmap: mfes,
                 mode: stage,
                 layout: apps,
+            }),
+            // Inject constants at build time for browser access
+            new DefinePlugin({
+                __DEFAULT_ROOTS__: JSON.stringify(DEFAULT_ROOTS),
             }),
         ],
 
