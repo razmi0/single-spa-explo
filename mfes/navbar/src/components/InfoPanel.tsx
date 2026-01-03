@@ -5,7 +5,6 @@ export interface MfeInfo {
     orgName: string;
     projectName: string;
     tools?: string[];
-    version?: string;
 }
 
 interface InfoPanelProps {
@@ -33,23 +32,15 @@ export function InfoPanel({ info }: InfoPanelProps) {
                     <div className="info-panel-header">Microfrontend Info</div>
                     <dl className="info-panel-content">
                         <div className="info-row">
-                            <dt>Organization</dt>
-                            <dd>{info.orgName}</dd>
-                        </div>
-                        <div className="info-row">
-                            <dt>Project</dt>
-                            <dd>{info.projectName}</dd>
+                            <dt>name</dt>
+                            <dd>
+                                @{info.orgName}/{info.projectName}
+                            </dd>
                         </div>
                         <div className="info-row">
                             <dt>Stack</dt>
                             <dd>{toolsDisplay}</dd>
                         </div>
-                        {info.version && (
-                            <div className="info-row">
-                                <dt>Version</dt>
-                                <dd>{info.version}</dd>
-                            </div>
-                        )}
                     </dl>
                 </div>
             )}

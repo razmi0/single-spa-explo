@@ -12,7 +12,6 @@ export default function Root(props: MfeDefaultProps) {
         orgName: "Razmio",
         projectName: "navbar",
         tools: ["vite", "react", "single-spa"],
-        version: "0.0.1",
     };
 
     const links: NavLink[] = Object.entries(defaultRoots).map(([key, value]) => ({

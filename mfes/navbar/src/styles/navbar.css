@@ -82,12 +82,12 @@
 
 .nav-link:hover {
     color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.1);
+    text-decoration: underline;
 }
 
 .nav-link--active {
     color: #a5b4fc;
-    background: rgba(100, 108, 255, 0.2);
+    text-decoration: underline;
 }
 
 /* Environment Pill */
