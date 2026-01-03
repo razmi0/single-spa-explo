@@ -15,20 +15,27 @@
     </route>
 </nav>
 <main>
-    <div class="app-wrapper">
-        <route path="/">
-            <application name="@Razmio/vite"></application>
-        </route>
-    </div>
-    <div class="app-wrapper">
-        <route path="/">
-            <application name="@Razmio/webpack"></application>
-        </route>
-    </div>
-    <div class="app-wrapper">
-        <route default>
-            <h1>404</h1>
-            <p>Page not found</p>
-        </route>
+    <div class="apps-wrapper">
+        <nav class="sidebar-wrapper">
+            <route path="/">
+                <application name="@Razmio/sidebar"></application>
+            </route>
+        </nav>
+        <article class="app-wrapper">
+            <route path="/">
+                <application name="@Razmio/vite"></application>
+            </route>
+        </article>
+        <article class="app-wrapper">
+            <route path="/">
+                <application name="@Razmio/webpack"></application>
+            </route>
+        </article>
+        <article class="app-wrapper">
+            <route default>
+                <h1>404</h1>
+                <p>Page not found</p>
+            </route>
+        </article>
     </div>
 </main>

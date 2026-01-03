@@ -9,3 +9,4 @@ mfes: "./mfes"
 
 vite: "./mfes/vite"
 webpack: "./mfes/webpack"
+navbar-vite: "./mfes/navbar"
