@@ -1,10 +1,12 @@
+import { useEffect } from "react";
+import { logMfeProps } from "../shared";
 import { EnvPill } from "./components/EnvPill";
 import { InfoPanel, type MfeInfo } from "./components/InfoPanel";
 import "./styles/navbar.css";
 import type { MfeDefaultProps } from "./types/mfe-props";
 
 export default function Root(props: MfeDefaultProps) {
-    const { name, rootConfig, getLoadedApps, mfeRegistry } = props;
+    const { name, rootConfig, mfeRegistry } = props;
 
     // MFE information for info panel - enhanced with root config data
     const mfeInfo: MfeInfo = {
@@ -19,15 +21,9 @@ export default function Root(props: MfeDefaultProps) {
     //     label: key,
     //     href: value[import.meta.env.MODE as "dev" | "prod"],
     // }));
-
-    // Log props in development for debugging
-    if (rootConfig?.mode === "development") {
-        console.log(`[${name}] Props received:`, {
-            rootConfig,
-            loadedApps: getLoadedApps?.(),
-            mfeRegistry,
-        });
-    }
+    useEffect(() => {
+        logMfeProps(name, props);
+    }, [name, props]);
 
     return (
         <header className="navbar">

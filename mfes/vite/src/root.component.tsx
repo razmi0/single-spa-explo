@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { logMfeProps } from "../shared";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import type { MfeDefaultProps } from "./types/mfe-props";
@@ -22,22 +23,15 @@ const Footer = ({ count, onClick }: { count: number; onClick: () => void }) => {
 };
 
 export default function Root(props: MfeDefaultProps) {
-    const { name, rootConfig, getLoadedApps, mfeRegistry } = props;
+    const { name, rootConfig } = props;
     const [count, setCount] = useState(0);
     const inc = () => {
         setCount((count) => count + 1);
     };
 
-    // Log props in development for debugging
     useEffect(() => {
-        if (rootConfig?.mode === "development") {
-            console.log(`[${name}] Props received:`, {
-                rootConfig,
-                loadedApps: getLoadedApps?.(),
-                mfeRegistry,
-            });
-        }
-    }, [name, rootConfig, getLoadedApps, mfeRegistry]);
+        logMfeProps(name, props);
+    }, [name, props]);
 
     return (
         <>

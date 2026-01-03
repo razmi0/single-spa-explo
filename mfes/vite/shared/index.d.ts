@@ -55,4 +55,7 @@ interface MfeDefaultProps extends AppProps {
     defaultRoots: DefaultRoots;
 }
 
+declare const logMfeProps: (name: string, props: MfeDefaultProps) => void;
+
+export { logMfeProps };
 export type { DefaultRoots, LoadedApp, MfeDefaultProps, MfeRegistry, RootConfigInfo, RootUrls };

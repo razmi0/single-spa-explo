@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { navigateToUrl } from "single-spa";
+import { logMfeProps } from "../shared";
 import type { MfeDefaultProps } from "./types/mfe-props";
 
 interface NavItem {
@@ -125,17 +126,10 @@ export default function Root(props: MfeDefaultProps) {
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
     useEffect(() => {
-        if (rootConfig?.mode === "development") {
-            console.log(`[${name}] Props received:`, {
-                rootConfig,
-                loadedApps: getLoadedApps?.(),
-                mfeRegistry,
-                defaultRoots,
-            });
-        }
-    }, [name, rootConfig, getLoadedApps, mfeRegistry, defaultRoots]);
+        logMfeProps(name, props);
+    }, [name, props]);
 
-    const updatedNavSections = useMemo(() => {
+    const navSectionsWithRootsLinks = useMemo(() => {
         const env = rootConfig?.mode.startsWith("dev") ? "dev" : "prod";
         const otherRoots = Object.entries(defaultRoots).map(([key, value]) => ({
             id: value[env],
@@ -176,7 +170,7 @@ export default function Root(props: MfeDefaultProps) {
     return (
         <div style={styles.sidebar}>
             <nav style={styles.nav}>
-                {updatedNavSections.map((section, sectionIdx) => (
+                {navSectionsWithRootsLinks.map((section, sectionIdx) => (
                     <div key={sectionIdx} style={styles.section}>
                         {section.title && <h2 style={styles.sectionTitle}>{section.title}</h2>}
                         {section.items.map((item) => (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import webpackLogo from "../public/webpack.png";
+import { logMfeProps } from "../shared";
 import reactLogo from "./assets/react.svg";
 import type { MfeDefaultProps } from "./types/mfe-props";
 
@@ -29,16 +30,9 @@ export default function Root(props: MfeDefaultProps) {
         setCount((count) => count + 1);
     };
 
-    // Log props and listen to events in development
     useEffect(() => {
-        if (rootConfig?.mode === "development") {
-            console.log(`[${name}] Props received:`, {
-                rootConfig,
-                loadedApps: getLoadedApps?.(),
-                mfeRegistry,
-            });
-        }
-    }, [name, rootConfig, getLoadedApps, mfeRegistry]);
+        logMfeProps(name, props);
+    }, [name, props]);
 
     return (
         <>
