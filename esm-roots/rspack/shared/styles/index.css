@@ -14,8 +14,9 @@
 
     text-align: center;
 
-    /* Navbar height for layout calculations */
+    /* Layout dimensions */
     --navbar-height: 56px;
+    --sidebar-width: 260px;
 }
 
 small {
@@ -59,26 +60,65 @@ body {
 
 main {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
     flex: 1;
+    min-height: calc(100vh - var(--navbar-height));
+}
+
+/* Sidebar - fixed left navigation */
+.sidebar-wrapper {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    /* background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%); */
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    z-index: 900;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Scrollbar styling */
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Apps container - offset by sidebar */
+.apps-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-left: var(--sidebar-width);
     padding: 2rem;
+    flex: 1;
+    align-items: flex-start;
+    justify-content: center;
+}
 
-    .apps-wrapper {
-        display: flex;
-        gap: 2rem;
-    }
+.app-wrapper {
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.02);
+    min-width: 300px;
+}
 
+/* Responsive: collapse sidebar on smaller screens */
+@media (max-width: 768px) {
     .sidebar-wrapper {
-        width: 200px;
-        background-color: rgba(255, 255, 255, 0.02);
+        width: var(--sidebar-collapsed-width);
     }
-
-    .app-wrapper {
-        border-radius: 8px;
-        padding: 1rem 0.5rem;
-        background-color: rgba(255, 255, 255, 0.02);
+    .apps-wrapper {
+        margin-left: var(--sidebar-collapsed-width);
     }
 }
 
@@ -121,6 +161,10 @@ button:focus-visible {
     small {
         color: rgba(0, 0, 0, 0.6);
         background-color: rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-wrapper {
+        background: linear-gradient(180deg, #f8f9fc 0%, #f1f3f8 100%);
+        border-right-color: rgba(0, 0, 0, 0.08);
     }
 }
 

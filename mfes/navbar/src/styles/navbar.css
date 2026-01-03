@@ -13,9 +13,7 @@
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 2rem 0 0rem;
 }
 
 .navbar-left,
@@ -172,7 +170,7 @@
     position: absolute;
     top: calc(100% + 0.5rem);
     left: 0;
-    width: 260px;
+    width: calc(var(--sidebar-width, 260px) - 2rem);
     background: rgba(24, 24, 32, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
