@@ -5,6 +5,8 @@ export interface MfeInfo {
     orgName: string;
     projectName: string;
     tools?: string[];
+    env: string;
+    root: string;
 }
 
 interface InfoPanelProps {
@@ -40,6 +42,10 @@ export function InfoPanel({ info }: InfoPanelProps) {
                         <div className="info-row">
                             <dt>Stack</dt>
                             <dd>{toolsDisplay}</dd>
+                        </div>
+                        <div className="info-row">
+                            <dt>Root</dt>
+                            <dd>{info.root}</dd>
                         </div>
                     </dl>
                 </div>
