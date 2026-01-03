@@ -17,6 +17,7 @@ const mfeRegistry: MfeRegistry[] = [
     { name: "@Razmio/navbar", route: "/" },
     { name: "@Razmio/vite", route: "/" },
     { name: "@Razmio/webpack", route: "/" },
+    { name: "@Razmio/sidebar", route: "/" },
 ];
 
 // Helper to get loaded apps with status

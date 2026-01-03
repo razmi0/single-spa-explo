@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { navigateToUrl } from "single-spa";
 import type { MfeDefaultProps } from "./types/mfe-props";
 
@@ -19,6 +19,7 @@ const navSections: NavSection[] = [
     {
         items: [
             { id: "home", label: "Home", path: "/", displayPath: "/" },
+            // { id: "all", label: "All MFEs", path: "/all", displayPath: "/all" },
             {
                 id: "dashboard",
                 label: "Dashboard",
@@ -112,9 +113,10 @@ const styles = {
 };
 
 export default function Root(props: MfeDefaultProps) {
-    const { name, rootConfig, getLoadedApps, mfeRegistry } = props;
+    const { name, rootConfig, getLoadedApps, mfeRegistry, defaultRoots } = props;
     const [activeItem, setActiveItem] = useState(() => {
         const path = window.location.pathname;
+        if (path.startsWith("/all")) return "all";
         if (path.startsWith("/vite")) return "vite";
         if (path.startsWith("/webpack")) return "webpack";
         if (path.startsWith("/rspack")) return "rspack";
@@ -128,13 +130,32 @@ export default function Root(props: MfeDefaultProps) {
                 rootConfig,
                 loadedApps: getLoadedApps?.(),
                 mfeRegistry,
+                defaultRoots,
             });
         }
-    }, [name, rootConfig, getLoadedApps, mfeRegistry]);
+    }, [name, rootConfig, getLoadedApps, mfeRegistry, defaultRoots]);
+
+    const updatedNavSections = useMemo(() => {
+        const env = rootConfig?.mode.startsWith("dev") ? "dev" : "prod";
+        const otherRoots = Object.entries(defaultRoots).map(([key, value]) => ({
+            id: value[env],
+            label: key,
+            path: value[env],
+            displayPath: "external",
+            external: true,
+        }));
+        return [
+            ...navSections,
+            {
+                title: "Other roots",
+                items: otherRoots,
+            },
+        ];
+    }, []);
 
     const handleNavClick = (item: NavItem) => {
         if (item.external) {
-            window.open(item.path, "_blank", "noopener,noreferrer");
+            window.open(item.path, "_self", "noopener,noreferrer");
         } else {
             setActiveItem(item.id);
             navigateToUrl(item.path);
@@ -155,7 +176,7 @@ export default function Root(props: MfeDefaultProps) {
     return (
         <div style={styles.sidebar}>
             <nav style={styles.nav}>
-                {navSections.map((section, sectionIdx) => (
+                {updatedNavSections.map((section, sectionIdx) => (
                     <div key={sectionIdx} style={styles.section}>
                         {section.title && <h2 style={styles.sectionTitle}>{section.title}</h2>}
                         {section.items.map((item) => (

@@ -1,5 +1,5 @@
 {
-    "name": "@razmio/shared-roots",
+    "name": "@razmio/shared-mfes",
     "version": "1.0.0",
     "type": "module",
     "scripts": {
@@ -11,6 +11,11 @@
         "@types/bun": "^1.1.0",
         "@types/node": "^20.0.0",
         "rollup": "^4.54.0",
-        "rollup-plugin-dts": "^6.3.0"
+        "rollup-plugin-dts": "^6.3.0",
+        "single-spa": "^5.9.3"
+    },
+    "private": true,
+    "peerDependencies": {
+        "typescript": "^5"
     }
 }

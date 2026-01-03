@@ -1,41 +1,50 @@
 <!--
-
-    This is the single-spa Layout Definition for your microfrontends.
-    See https://single-spa.js.org/docs/layout-definition/ for more information.
-
-    Props are injected dynamically via customProps in each root-config.
-    Static props can be added here using the props attribute on <application>.
-    Example: <application name="@Razmio/navbar" props="navConfig"></application>
-
+    Single-spa Layout Definition
+    See https://single-spa.js.org/docs/layout-definition/
   -->
 
 <nav class="navbar-wrapper">
-    <route path="/">
-        <application name="@Razmio/navbar"></application>
-    </route>
+    <application name="@Razmio/navbar"></application>
 </nav>
 <main>
     <div class="apps-wrapper">
         <nav class="sidebar-wrapper">
-            <route path="/">
-                <application name="@Razmio/sidebar"></application>
-            </route>
+            <application name="@Razmio/sidebar"></application>
         </nav>
-        <article class="app-wrapper">
+        <div class="content-wrapper">
+            <!-- Home: show all MFEs -->
             <route path="/">
-                <application name="@Razmio/vite"></application>
+                <article class="app-wrapper">
+                    <application name="@Razmio/vite"></application>
+                </article>
+                <article class="app-wrapper">
+                    <application name="@Razmio/webpack"></application>
+                </article>
             </route>
-        </article>
-        <article class="app-wrapper">
-            <route path="/">
-                <application name="@Razmio/webpack"></application>
+            <!-- Individual MFE routes -->
+            <route path="/mfe/vite">
+                <article class="app-wrapper">
+                    <application name="@Razmio/vite"></application>
+                </article>
             </route>
-        </article>
-        <article class="app-wrapper">
+            <route path="/mfe/webpack">
+                <article class="app-wrapper">
+                    <application name="@Razmio/webpack"></application>
+                </article>
+            </route>
+            <route path="/mfe/rspack">
+                <article class="app-wrapper placeholder">
+                    <h2>Rspack MFE</h2>
+                    <p>Coming soon</p>
+                </article>
+            </route>
+            <!-- 404 -->
             <route default>
-                <h1>404</h1>
-                <p>Page not found</p>
+                <article class="app-wrapper placeholder">
+                    <h1>404</h1>
+                    <p>Page not found</p>
+                </article>
             </route>
-        </article>
+        </div>
     </div>
 </main>
