@@ -15,8 +15,11 @@ const rootConfig: RootConfigInfo = {
 // MFE Registry - All known microfrontends
 const mfeRegistry: MfeRegistry[] = [
     { name: "@Razmio/navbar", route: "/" },
-    { name: "@Razmio/vite", route: "/" },
-    { name: "@Razmio/webpack", route: "/" },
+    { name: "@Razmio/sidebar", route: "/" },
+    { name: "@Razmio/vite", route: "/mfe/vite" },
+    { name: "@Razmio/webpack", route: "/mfe/webpack" },
+    { name: "@Razmio/rspack", route: "/mfe/rspack" },
+    { name: "@Razmio/dashboard", route: "/mfe/dashboard" },
 ];
 
 // Helper to get loaded apps with status
