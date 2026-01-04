@@ -169,7 +169,7 @@
 .info-panel {
     position: absolute;
     top: calc(100% + 0.5rem);
-    left: 0;
+    right: 0;
     width: calc(var(--sidebar-width, 260px) - 2rem);
     background: rgba(24, 24, 32, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
