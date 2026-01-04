@@ -4,6 +4,7 @@
         "@Razmio/navbar": "https://single-spa-explo-nav.vercel.app/Razmio-navbar.js",
         "@Razmio/sidebar": "https://single-spa-explo-rspack-sidebar.vercel.app/Razmio-sidebar.js",
         "@Razmio/webpack": "https://single-spa-explomfe-webpack.vercel.app/Razmio-webpack.js",
-        "@Razmio/vite": "https://mfe-vite-eight.vercel.app/Razmio-vite.js"
+        "@Razmio/vite": "https://mfe-vite-eight.vercel.app/Razmio-vite.js",
+        "@Razmio/dashboard": "https://single-spa-explo-mfe-rootsbench.vercel.app/Razmio-dashboard.js"
     }
 }
