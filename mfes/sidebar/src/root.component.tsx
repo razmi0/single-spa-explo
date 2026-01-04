@@ -99,10 +99,7 @@ export default function Root(props: MfeDefaultProps) {
             </nav>
 
             <div className="sidebar__footer">
-                <p className="sidebar__footer-info">
-                    {rootConfig?.tech && `Built with ${rootConfig.tech}`}
-                    {rootConfig?.mode === "development" && " • Dev Mode"}
-                </p>
+                <p className="sidebar__footer-info">{rootConfig?.tech && `Built with Rspack`}</p>
             </div>
         </div>
     );
