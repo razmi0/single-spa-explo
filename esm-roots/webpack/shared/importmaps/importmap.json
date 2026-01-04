@@ -2,7 +2,7 @@
     "imports": {
         "@Razmio/root-config": "http://localhost:3000/Razmio-root-config.js",
         "@Razmio/navbar": "https://single-spa-explo-nav.vercel.app/Razmio-navbar.js",
-        "@Razmio/sidebar": "",
+        "@Razmio/sidebar": "https://single-spa-explo-rspack-sidebar.vercel.app/Razmio-sidebar.js",
         "@Razmio/webpack": "https://single-spa-explomfe-webpack.vercel.app/Razmio-webpack.js",
         "@Razmio/vite": "https://mfe-vite-eight.vercel.app/Razmio-vite.js"
     }
