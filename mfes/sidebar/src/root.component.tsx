@@ -54,7 +54,7 @@ export default function Root(props: MfeDefaultProps) {
 
     const navSectionsWithRootsLinks = useMemo(() => {
         const env = rootConfig?.mode.startsWith("dev") ? "dev" : "prod";
-        console.log("defaultRoots", defaultRoots);
+        console.log("env", env);
         const otherRoots = Object.entries(defaultRoots).map(([key, value]) => ({
             id: key,
             label: key.charAt(0).toUpperCase() + key.slice(1),
