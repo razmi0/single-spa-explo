@@ -64,6 +64,7 @@ export default (env, argv) => {
             // Inject constants at build time for browser access
             new DefinePlugin({
                 __DEFAULT_ROOTS__: JSON.stringify(DEFAULT_ROOTS),
+                "process.env.NODE_ENV": JSON.stringify(stage === "prod" ? "production" : "development"),
             }),
         ],
 
