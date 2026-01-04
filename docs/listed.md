@@ -18,10 +18,17 @@ It is a POC project and focus on comparing different bundlers for single-spa mic
 - webpack: "./mfes/webpack"
 - navbar-vite: "./mfes/navbar"
 - sidebar-rspack: "./mfes/sidebar"
+- bench-dashboard-vite: "./mfes/bench/dashboard"
 
-### Special directory
+### Special directories
 
 **shared**: (./esm-roots/shared)
     - contains shared configs, templates, importmaps, functions, constants, types
     - it runs with Bun [package.json](./esm-roots/shared/package.json) and "sync", copy all content in each root's shared directory
     - you must changes code inside this [directory](./esm-roots/shared) because it is the source of truth for all roots.
+
+**shared-mfes**: (./mfes/shared)
+    - contains shared types and utilities for MFEs (e.g. mfe-props types)
+    - it runs with Bun [package.json](./mfes/shared/package.json) and "sync", copy all content to each MFE's shared directory
+    - targets: navbar, sidebar, vite, webpack, bench/dashboard
+    - you must change code inside this [directory](./mfes/shared) because it is the source of truth for all MFEs.
