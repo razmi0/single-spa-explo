@@ -1,0 +1,277 @@
+/* Google Fonts - loaded via CSS for single-spa compatibility */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;500;700&display=swap");
+
+/* =============================================
+   Dashboard - BEM Structure
+   Block: dashboard
+   ============================================= */
+
+/* CSS Variables scoped to dashboard */
+.dashboard {
+    --dashboard-bg-primary: #0d1117;
+    --dashboard-bg-secondary: #161b22;
+    --dashboard-bg-tertiary: #21262d;
+    --dashboard-border-color: #30363d;
+    --dashboard-text-primary: #e6edf3;
+    --dashboard-text-secondary: #8b949e;
+    --dashboard-text-muted: #6e7681;
+
+    --dashboard-vite-color: #646cff;
+    --dashboard-vite-glow: rgba(100, 108, 255, 0.3);
+    --dashboard-rspack-color: #ff6b35;
+    --dashboard-rspack-glow: rgba(255, 107, 53, 0.3);
+    --dashboard-webpack-color: #8dd6f9;
+    --dashboard-webpack-glow: rgba(141, 214, 249, 0.3);
+
+    --dashboard-success-color: #3fb950;
+    --dashboard-warning-color: #d29922;
+}
+
+/* Block */
+.dashboard {
+    flex: 1;
+    min-width: 0;
+    max-width: 1400px;
+    /* margin: 0 auto; */
+    padding: 2rem;
+    font-family: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--dashboard-bg-primary);
+    color: var(--dashboard-text-primary);
+    line-height: 1.6;
+}
+
+/* Header */
+.dashboard__header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--dashboard-border-color);
+}
+
+.dashboard__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(
+        135deg,
+        var(--dashboard-vite-color),
+        var(--dashboard-rspack-color),
+        var(--dashboard-webpack-color)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dashboard__subtitle {
+    color: var(--dashboard-text-secondary);
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+.dashboard__subtitle-highlight {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: var(--dashboard-text-primary);
+}
+
+/* Main content */
+.dashboard__main {
+    display: block;
+}
+
+/* Stats Grid */
+.dashboard__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Stat Card */
+.dashboard__stat-card {
+    background: var(--dashboard-bg-secondary);
+    border: 1px solid var(--dashboard-border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard__stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.dashboard__stat-card--vite::before {
+    background: var(--dashboard-vite-color);
+}
+
+.dashboard__stat-card--rspack::before {
+    background: var(--dashboard-rspack-color);
+}
+
+.dashboard__stat-card--webpack::before {
+    background: var(--dashboard-webpack-color);
+}
+
+.dashboard__stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard__stat-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dashboard-text-primary);
+}
+
+.dashboard__stat-value {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+.dashboard__stat-card--vite .dashboard__stat-value {
+    color: var(--dashboard-vite-color);
+}
+
+.dashboard__stat-card--rspack .dashboard__stat-value {
+    color: var(--dashboard-rspack-color);
+}
+
+.dashboard__stat-card--webpack .dashboard__stat-value {
+    color: var(--dashboard-webpack-color);
+}
+
+.dashboard__stat-label {
+    color: var(--dashboard-text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Charts Container */
+.dashboard__charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Chart Card */
+.dashboard__chart-card {
+    background: var(--dashboard-bg-secondary);
+    border: 1px solid var(--dashboard-border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.dashboard__chart-card--full-width {
+    grid-column: 1 / -1;
+}
+
+.dashboard__chart-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dashboard-text-primary);
+}
+
+.dashboard__chart-wrapper {
+    position: relative;
+    height: 300px;
+}
+
+.dashboard__chart-card--full-width .dashboard__chart-wrapper {
+    height: 250px;
+}
+
+/* Summary */
+.dashboard__summary {
+    background: var(--dashboard-bg-secondary);
+    border: 1px solid var(--dashboard-border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard__summary-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dashboard-text-primary);
+}
+
+.dashboard__summary-content {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--dashboard-text-secondary);
+}
+
+.dashboard__summary-highlight {
+    color: var(--dashboard-success-color);
+    font-weight: 600;
+}
+
+.dashboard__comparison {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.dashboard__comparison-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: var(--dashboard-bg-tertiary);
+    border-radius: 8px;
+}
+
+.dashboard__comparison-row span:last-child {
+    color: var(--dashboard-text-primary);
+}
+
+/* Footer */
+.dashboard__footer {
+    text-align: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--dashboard-border-color);
+    color: var(--dashboard-text-muted);
+    font-size: 0.9rem;
+}
+
+.dashboard__footer-text {
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard {
+        padding: 1rem;
+    }
+
+    .dashboard__title {
+        font-size: 1.8rem;
+    }
+
+    .dashboard__stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard__charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard__stat-value {
+        font-size: 2rem;
+    }
+}

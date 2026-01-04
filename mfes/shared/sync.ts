@@ -19,6 +19,7 @@ const TARGETS = [
     join(SHARED_DIR, "../sidebar/shared"),
     join(SHARED_DIR, "../vite/shared"),
     join(SHARED_DIR, "../webpack/shared"),
+    join(SHARED_DIR, "../bench/dashboard/shared"),
 ];
 
 const WATCH_DIRS = ["src"];

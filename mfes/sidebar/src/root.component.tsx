@@ -19,23 +19,15 @@ interface NavSection {
 
 const navSections: NavSection[] = [
     {
-        items: [
-            { id: "home", label: "Home", path: "/", displayPath: "/" },
-            {
-                id: "dashboard",
-                label: "Dashboard",
-                path: "https://single-spa-explo.vercel.app/",
-                displayPath: "↗",
-                external: true,
-            },
-        ],
+        items: [{ id: "home", label: "Home", path: "/", displayPath: "/" }],
     },
     {
         title: "Microfrontends",
         items: [
-            { id: "vite", label: "Vite", path: "/mfe/vite", displayPath: "/mfe/vite" },
-            { id: "webpack", label: "Webpack", path: "/mfe/webpack", displayPath: "/mfe/webpack" },
-            { id: "rspack", label: "Rspack", path: "/mfe/rspack", displayPath: "/mfe/rspack" },
+            { id: "___vite", label: "Vite", path: "/mfe/vite", displayPath: "/mfe/vite" },
+            { id: "___webpack", label: "Webpack", path: "/mfe/webpack", displayPath: "/mfe/webpack" },
+            { id: "___rspack", label: "Rspack", path: "/mfe/rspack", displayPath: "/mfe/rspack" },
+            { id: "___dashboard", label: "Benchmarks", path: "/mfe/dashboard", displayPath: "/mfe/dashboard" },
         ],
     },
 ];

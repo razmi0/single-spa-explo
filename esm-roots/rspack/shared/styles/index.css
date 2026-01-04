@@ -79,7 +79,7 @@ main {
     flex-wrap: wrap;
     gap: 2rem;
     margin-left: var(--sidebar-width);
-    padding: 2rem;
+    /* padding: 2rem; */
     flex: 1;
     align-items: flex-start;
     justify-content: center;
@@ -90,12 +90,14 @@ main {
     padding: 1.5rem;
     background-color: rgba(255, 255, 255, 0.02);
     min-width: 300px;
+    margin-top: 2rem;
 }
 
 .content-wrapper {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    flex: 1;
     gap: 2rem;
     justify-content: center;
 }
@@ -152,4 +154,10 @@ h1 {
 
 div[id="single-spa-application:\@Razmio/sidebar"] {
     height: 100%;
+}
+
+div[id="single-spa-application:\@Razmio/dashboard"] {
+    flex: 1;
+    width: 100%;
+    display: flex;
 }
