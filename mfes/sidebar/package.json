@@ -27,7 +27,6 @@
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "single-spa": "^5.9.3",
-        "single-spa-css": "^4.0.1",
         "single-spa-react": "^6.0.2"
     },
     "types": "dist/Razmio-sidebar.d.ts"
