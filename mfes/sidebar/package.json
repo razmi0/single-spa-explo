@@ -16,6 +16,8 @@
         "@types/react": "^18.3.1",
         "@types/react-dom": "^18.3.1",
         "cross-env": "^7.0.3",
+        "css-loader": "^7.1.2",
+        "style-loader": "^4.0.0",
         "ts-config-single-spa": "^3.0.0",
         "typescript": "^5.3.5",
         "webpack-config-single-spa-react-ts": "^8.0.0",
@@ -25,6 +27,7 @@
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "single-spa": "^5.9.3",
+        "single-spa-css": "^4.0.1",
         "single-spa-react": "^6.0.2"
     },
     "types": "dist/Razmio-sidebar.d.ts"

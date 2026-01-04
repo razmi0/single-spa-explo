@@ -16,6 +16,7 @@ const DEFAULT_PORT = 3005;
 export default (env, argv) => {
     const isDev = argv.mode !== "production";
 
+    /** @type {any} */
     const config = singleSpaDefaults({
         orgName: ORG_NAME,
         projectName: PROJECT_NAME,
@@ -24,17 +25,20 @@ export default (env, argv) => {
         outputSystemJS: false,
     });
 
+    // Remove CSS rules from base config - we use style-loader
+    if (config.module?.rules) {
+        config.module.rules = config.module.rules.filter((/** @type {any} */ rule) => {
+            if (typeof rule === "object" && rule !== null && "test" in rule) {
+                if (rule.test instanceof RegExp && rule.test.test(".css")) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
     return merge(config, {
         entry: `./src/${ORG_NAME}-${PROJECT_NAME}.tsx`,
-
-        // output: {
-        //     filename: `${ORG_NAME}-${PROJECT_NAME}.js`,
-        //     // library: { type: "module" },
-        //     publicPath: "auto",
-        //     // clean: true,
-        //     // iife: false, // <-- Disable IIFE wrapping for ESM
-        //     // chunkFormat: "module", // <-- Ensure chunks are also ESM
-        // },
 
         devServer: {
             port: DEFAULT_PORT,
@@ -43,7 +47,6 @@ export default (env, argv) => {
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
-            // historyApiFallback: true,
         },
 
         resolve: {
@@ -51,7 +54,6 @@ export default (env, argv) => {
         },
 
         // React externals: bundled in dev for HMR, external in prod for shared CDN
-        // externalsType: "module",
         externals: isDev ? {} : ["react", "react-dom", "react-dom/client"],
 
         module: {
@@ -81,10 +83,11 @@ export default (env, argv) => {
                         },
                     },
                 },
-                // Native CSS support
+                // CSS with style-loader (injects <style> tags on import)
                 {
-                    test: /\.css$/,
-                    type: "css",
+                    test: /\.css$/i,
+                    use: ["style-loader", "css-loader"],
+                    type: "javascript/auto",
                 },
                 // Native asset modules (replaces file-loader/url-loader)
                 {
@@ -102,10 +105,5 @@ export default (env, argv) => {
                 "process.env.NODE_ENV": JSON.stringify(isDev ? "development" : "production"),
             }),
         ].filter(Boolean),
-
-        experiments: {
-            css: true,
-            // outputModule: true,
-        },
     });
 };

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { navigateToUrl } from "single-spa";
 import { logMfeProps } from "../shared";
+import "./styles/sidebar.css";
 import type { MfeDefaultProps } from "./types/mfe-props";
 
 interface NavItem {
@@ -20,12 +21,11 @@ const navSections: NavSection[] = [
     {
         items: [
             { id: "home", label: "Home", path: "/", displayPath: "/" },
-            // { id: "all", label: "All MFEs", path: "/all", displayPath: "/all" },
             {
                 id: "dashboard",
                 label: "Dashboard",
                 path: "https://single-spa-explo.vercel.app/",
-                displayPath: "external",
+                displayPath: "↗",
                 external: true,
             },
         ],
@@ -40,90 +40,13 @@ const navSections: NavSection[] = [
     },
 ];
 
-const styles = {
-    sidebar: {
-        display: "flex",
-        flexDirection: "column" as const,
-        height: "100%",
-        padding: 0,
-        textAlign: "left" as const,
-    },
-    nav: {
-        flex: 1,
-        padding: "0.5rem 0",
-        overflowY: "auto" as const,
-    },
-    section: {
-        marginBottom: "0.25rem",
-    },
-    sectionTitle: {
-        fontSize: "0.6875rem",
-        fontWeight: 600,
-        textTransform: "uppercase" as const,
-        letterSpacing: "0.08em",
-        color: "rgba(255, 255, 255, 0.4)",
-        padding: "1rem 1rem 0.5rem",
-        margin: 0,
-    },
-    navItem: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.5rem 1rem",
-        margin: 0,
-        cursor: "pointer",
-        transition: "all 0.15s ease",
-        textDecoration: "none",
-        color: "rgba(255, 255, 255, 0.7)",
-        fontSize: "0.75rem",
-        fontWeight: 500,
-        border: "none",
-        background: "transparent",
-        width: "100%",
-        textAlign: "left" as const,
-        borderLeft: "2px solid transparent",
-    },
-    navItemHover: {
-        background: "rgba(255, 255, 255, 0.04)",
-        color: "rgba(255, 255, 255, 0.95)",
-    },
-    navItemActive: {
-        background: "rgba(255, 255, 255, 0.04)",
-        color: "rgba(255, 255, 255, 0.95)",
-        borderLeftColor: "rgba(255, 255, 255, 0.5)",
-    },
-    navItemLabel: {
-        opacity: 1,
-    },
-    navItemPath: {
-        opacity: 0.5,
-        fontWeight: 400,
-        fontFamily: "monospace",
-        fontSize: "0.6875rem",
-    },
-    footer: {
-        padding: "0.75rem 1rem",
-        borderTop: "1px solid rgba(255, 255, 255, 0.06)",
-    },
-    footerInfo: {
-        fontSize: "0.625rem",
-        color: "rgba(255, 255, 255, 0.35)",
-        margin: 0,
-        textAlign: "center" as const,
-    },
-};
-
 export default function Root(props: MfeDefaultProps) {
-    const { name, rootConfig, getLoadedApps, mfeRegistry, defaultRoots } = props;
+    const { name, rootConfig, defaultRoots } = props;
     const [activeItem, setActiveItem] = useState(() => {
         const path = window.location.pathname;
-        if (path.startsWith("/all")) return "all";
-        if (path.startsWith("/vite")) return "vite";
-        if (path.startsWith("/webpack")) return "webpack";
-        if (path.startsWith("/rspack")) return "rspack";
-        return "home";
+        if (path === "/") return "home";
+        return path.split("/").filter(Boolean)[0] || "home";
     });
-    const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
     useEffect(() => {
         logMfeProps(name, props);
@@ -132,10 +55,10 @@ export default function Root(props: MfeDefaultProps) {
     const navSectionsWithRootsLinks = useMemo(() => {
         const env = rootConfig?.mode.startsWith("dev") ? "dev" : "prod";
         const otherRoots = Object.entries(defaultRoots).map(([key, value]) => ({
-            id: value[env],
-            label: key,
+            id: key,
+            label: key.charAt(0).toUpperCase() + key.slice(1),
             path: value[env],
-            displayPath: "external",
+            displayPath: "↗",
             external: true,
         }));
         return [
@@ -145,7 +68,7 @@ export default function Root(props: MfeDefaultProps) {
                 items: otherRoots,
             },
         ];
-    }, []);
+    }, [defaultRoots, rootConfig?.mode]);
 
     const handleNavClick = (item: NavItem) => {
         if (item.external) {
@@ -156,40 +79,34 @@ export default function Root(props: MfeDefaultProps) {
         }
     };
 
-    const getItemStyle = (itemId: string) => {
-        const isActive = activeItem === itemId;
-        const isHovered = hoveredItem === itemId;
-
-        return {
-            ...styles.navItem,
-            ...(isHovered && !isActive ? styles.navItemHover : {}),
-            ...(isActive ? styles.navItemActive : {}),
-        };
-    };
-
     return (
-        <div style={styles.sidebar}>
-            <nav style={styles.nav}>
+        <div className="sidebar">
+            <nav className="sidebar__nav">
                 {navSectionsWithRootsLinks.map((section, sectionIdx) => (
-                    <div key={sectionIdx} style={styles.section}>
-                        {section.title && <h2 style={styles.sectionTitle}>{section.title}</h2>}
+                    <div key={sectionIdx} className="sidebar__section">
+                        {section.title && <span className="sidebar__section-title">{section.title}</span>}
                         {section.items.map((item) => (
                             <button
                                 key={item.id}
-                                style={getItemStyle(item.id)}
-                                onClick={() => handleNavClick(item)}
-                                onMouseEnter={() => setHoveredItem(item.id)}
-                                onMouseLeave={() => setHoveredItem(null)}>
-                                <span style={styles.navItemLabel}>{item.label}</span>
-                                <span style={styles.navItemPath}>{item.displayPath}</span>
+                                className={`sidebar__nav-item${
+                                    activeItem === item.id ? " sidebar__nav-item--active" : ""
+                                }`}
+                                onClick={() => handleNavClick(item)}>
+                                <span className="sidebar__nav-item-label">{item.label}</span>
+                                <span
+                                    className={`sidebar__nav-item-path${
+                                        item.external ? " sidebar__nav-item-path--external" : ""
+                                    }`}>
+                                    {item.displayPath}
+                                </span>
                             </button>
                         ))}
                     </div>
                 ))}
             </nav>
 
-            <div style={styles.footer}>
-                <p style={styles.footerInfo}>
+            <div className="sidebar__footer">
+                <p className="sidebar__footer-info">
                     {rootConfig?.tech && `Built with ${rootConfig.tech}`}
                     {rootConfig?.mode === "development" && " • Dev Mode"}
                 </p>

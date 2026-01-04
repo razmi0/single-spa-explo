@@ -23,7 +23,7 @@ const Footer = ({ count, onClick }: { count: number; onClick: () => void }) => {
 };
 
 export default function Root(props: MfeDefaultProps) {
-    const { name, rootConfig, getLoadedApps, mfeRegistry } = props;
+    const { name, rootConfig } = props;
     const [count, setCount] = useState(0);
 
     const inc = () => {
