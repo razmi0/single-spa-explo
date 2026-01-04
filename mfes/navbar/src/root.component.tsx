@@ -40,7 +40,7 @@ export default function Root(props: MfeDefaultProps) {
                     {/* <NavLinks links={links} /> */}
                     {mfeRegistry && (
                         <span className="navbar-mfe-count" title="Loaded MFEs">
-                            {mfeRegistry.length} MFEs
+                            {mfeRegistry.length} MFEs connected
                         </span>
                     )}
                     <InfoPanel info={mfeInfo} />

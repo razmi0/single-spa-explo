@@ -100,6 +100,8 @@ export default function Root(props: MfeDefaultProps) {
 
             <div className="sidebar__footer">
                 <p className="sidebar__footer-info">{rootConfig?.tech && `Built with Rspack`}</p>
+                <p className="sidebar__footer-info">name : {name}</p>
+                <p className="sidebar__footer-info">root : {rootConfig.tech}</p>
             </div>
         </div>
     );
