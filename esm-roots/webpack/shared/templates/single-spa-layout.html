@@ -13,7 +13,7 @@
         </nav>
         <div class="content-wrapper">
             <!-- Home: show all MFEs -->
-            <route path="/">
+            <route exact path="/">
                 <article class="app-wrapper">
                     <application name="@Razmio/vite"></application>
                 </article>
@@ -22,24 +22,24 @@
                 </article>
             </route>
             <!-- Individual MFE routes -->
-            <route path="/mfe/vite">
+            <route exact path="/mfe/vite">
                 <article class="app-wrapper">
                     <application name="@Razmio/vite"></application>
                 </article>
             </route>
-            <route path="/mfe/webpack">
+            <route exact path="/mfe/webpack">
                 <article class="app-wrapper">
                     <application name="@Razmio/webpack"></application>
                 </article>
             </route>
-            <route path="/mfe/rspack">
+            <route exact path="/mfe/rspack">
                 <article class="app-wrapper placeholder">
                     <h2>Rspack MFE</h2>
                     <p>Coming soon</p>
                 </article>
             </route>
             <!-- 404 -->
-            <route default>
+            <route exact default>
                 <article class="app-wrapper placeholder">
                     <h1>404</h1>
                     <p>Page not found</p>

@@ -33,9 +33,9 @@ const navSections: NavSection[] = [
     {
         title: "Microfrontends",
         items: [
-            { id: "vite", label: "Vite", path: "/vite", displayPath: "/vite" },
-            { id: "webpack", label: "Webpack", path: "/webpack", displayPath: "/webpack" },
-            { id: "rspack", label: "Rspack", path: "/rspack", displayPath: "/rspack" },
+            { id: "vite", label: "Vite", path: "/mfe/vite", displayPath: "/mfe/vite" },
+            { id: "webpack", label: "Webpack", path: "/mfe/webpack", displayPath: "/mfe/webpack" },
+            { id: "rspack", label: "Rspack", path: "/mfe/rspack", displayPath: "/mfe/rspack" },
         ],
     },
 ];
